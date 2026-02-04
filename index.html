@@ -505,10 +505,41 @@
         <button class="btn btn-danger" style="margin-top: 10px;" onclick="confirmReset()">🗑️ Reiniciar Todo</button>
       </div>
 
+      <div class="card" style="background: var(--yellow);">
+        <h3 class="card-title">📲 Instalar como App</h3>
+        <p style="font-weight: 600; margin-bottom: 15px; font-size: 0.9rem;">¡Usa esta app como si fuera nativa!</p>
+
+        <div style="background: white; padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 2px solid var(--black);">
+          <p style="font-weight: 800; margin-bottom: 8px;">📱 iPhone/iPad (Safari):</p>
+          <ol style="font-size: 0.85rem; padding-left: 20px; font-weight: 600;">
+            <li>Toca el botón Compartir ⬆️</li>
+            <li>Selecciona "Añadir a inicio"</li>
+            <li>Confirma con "Añadir"</li>
+          </ol>
+        </div>
+
+        <div style="background: white; padding: 15px; border-radius: 12px; border: 2px solid var(--black);">
+          <p style="font-weight: 800; margin-bottom: 8px;">🤖 Android (Chrome):</p>
+          <ol style="font-size: 0.85rem; padding-left: 20px; font-weight: 600;">
+            <li>Toca el menú ⋮ (3 puntos)</li>
+            <li>Selecciona "Añadir a pantalla inicio"</li>
+            <li>Confirma con "Añadir"</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="card" style="background: var(--pink); color: white;">
+        <h3 class="card-title" style="color: white;">🔗 Compartir con Amigos</h3>
+        <p style="font-weight: 600; margin-bottom: 15px; font-size: 0.9rem;">¡Comparte la app para que otros también aprendan!</p>
+        <button class="btn" style="background: white; color: var(--black);" onclick="shareApp()">📤 Compartir App</button>
+        <button class="btn btn-secondary" style="margin-top: 10px; background: rgba(255,255,255,0.2); color: white; border-color: white;" onclick="copyLink()">📋 Copiar Link</button>
+      </div>
+
       <div class="card">
-        <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+        <p style="text-align: center; color: var(--gray); font-size: 0.9rem;">
           Oxford Words Master v1.0<br>
-          Basado en Oxford 3000 & 5000
+          Basado en Oxford 3000 & 5000<br>
+          <strong>5000+ palabras</strong> para aprender
         </p>
       </div>
     </div>
@@ -857,7 +888,196 @@ const WORDS = [
   {w:"assurance",t:"n",l:"C1",m:"garantía"},{w:"assure",t:"v",l:"C1",m:"asegurar"},{w:"astonishing",t:"adj",l:"C1",m:"asombroso"},
   {w:"asylum",t:"n",l:"C1",m:"asilo"},{w:"authentic",t:"adj",l:"C1",m:"auténtico"},{w:"authorize",t:"v",l:"C1",m:"autorizar"},
   {w:"autonomy",t:"n",l:"C1",m:"autonomía"},{w:"availability",t:"n",l:"C1",m:"disponibilidad"},{w:"await",t:"v",l:"C1",m:"esperar"},
-  {w:"awareness",t:"n",l:"C1",m:"conciencia"},{w:"awkward",t:"adj",l:"C1",m:"incómodo"},{w:"backdrop",t:"n",l:"C1",m:"telón de fondo"}
+  {w:"awareness",t:"n",l:"C1",m:"conciencia"},{w:"awkward",t:"adj",l:"C1",m:"incómodo"},{w:"backdrop",t:"n",l:"C1",m:"telón de fondo"},
+  // More C1 words
+  {w:"backing",t:"n",l:"C1",m:"respaldo"},{w:"backup",t:"n",l:"C1",m:"copia de seguridad"},{w:"bail",t:"n",l:"C1",m:"fianza"},
+  {w:"ballot",t:"n",l:"C1",m:"papeleta"},{w:"banner",t:"n",l:"C1",m:"pancarta"},{w:"bare",t:"adj",l:"C1",m:"desnudo"},
+  {w:"barely",t:"adv",l:"C1",m:"apenas"},{w:"bargain",t:"n",l:"C1",m:"ganga"},{w:"barrel",t:"n",l:"C1",m:"barril"},
+  {w:"beast",t:"n",l:"C1",m:"bestia"},{w:"behalf",t:"n",l:"C1",m:"nombre de"},{w:"beloved",t:"adj",l:"C1",m:"amado"},
+  {w:"bench",t:"n",l:"C1",m:"banco"},{w:"benchmark",t:"n",l:"C1",m:"punto de referencia"},{w:"beneath",t:"prep",l:"C1",m:"debajo de"},
+  {w:"beneficial",t:"adj",l:"C1",m:"beneficioso"},{w:"betray",t:"v",l:"C1",m:"traicionar"},{w:"bias",t:"n",l:"C1",m:"sesgo"},
+  {w:"bid",t:"n",l:"C1",m:"oferta"},{w:"bind",t:"v",l:"C1",m:"atar"},{w:"biography",t:"n",l:"C1",m:"biografía"},
+  {w:"bishop",t:"n",l:"C1",m:"obispo"},{w:"bizarre",t:"adj",l:"C1",m:"extraño"},{w:"blade",t:"n",l:"C1",m:"hoja"},
+  {w:"blast",t:"n",l:"C1",m:"explosión"},{w:"bleed",t:"v",l:"C1",m:"sangrar"},{w:"blend",t:"v",l:"C1",m:"mezclar"},
+  {w:"bless",t:"v",l:"C1",m:"bendecir"},{w:"blessing",t:"n",l:"C1",m:"bendición"},{w:"boast",t:"v",l:"C1",m:"presumir"},
+  {w:"bonus",t:"n",l:"C1",m:"bonificación"},{w:"boom",t:"n",l:"C1",m:"auge"},{w:"boost",t:"v",l:"C1",m:"impulsar"},
+  {w:"bounce",t:"v",l:"C1",m:"rebotar"},{w:"bound",t:"adj",l:"C1",m:"obligado"},{w:"boundary",t:"n",l:"C1",m:"límite"},
+  {w:"bow",t:"v",l:"C1",m:"inclinarse"},{w:"breach",t:"n",l:"C1",m:"brecha"},{w:"breakdown",t:"n",l:"C1",m:"avería"},
+  {w:"breakthrough",t:"n",l:"C1",m:"avance"},{w:"breed",t:"v",l:"C1",m:"criar"},{w:"broadband",t:"n",l:"C1",m:"banda ancha"},
+  {w:"browser",t:"n",l:"C1",m:"navegador"},{w:"brutal",t:"adj",l:"C1",m:"brutal"},{w:"buck",t:"n",l:"C1",m:"dólar"},
+  {w:"buddy",t:"n",l:"C1",m:"amigo"},{w:"buffer",t:"n",l:"C1",m:"amortiguador"},{w:"bulk",t:"n",l:"C1",m:"volumen"},
+  {w:"burden",t:"n",l:"C1",m:"carga"},{w:"bureaucracy",t:"n",l:"C1",m:"burocracia"},{w:"burial",t:"n",l:"C1",m:"entierro"},
+  {w:"burst",t:"v",l:"C1",m:"estallar"},{w:"cabinet",t:"n",l:"C1",m:"gabinete"},{w:"calculation",t:"n",l:"C1",m:"cálculo"},
+  {w:"canvas",t:"n",l:"C1",m:"lienzo"},{w:"capability",t:"n",l:"C1",m:"capacidad"},{w:"capitalism",t:"n",l:"C1",m:"capitalismo"},
+  {w:"cargo",t:"n",l:"C1",m:"carga"},{w:"carriage",t:"n",l:"C1",m:"carruaje"},{w:"carve",t:"v",l:"C1",m:"tallar"},
+  {w:"casino",t:"n",l:"C1",m:"casino"},{w:"casualty",t:"n",l:"C1",m:"víctima"},{w:"catalogue",t:"n",l:"C1",m:"catálogo"},
+  {w:"cater",t:"v",l:"C1",m:"atender"},{w:"cattle",t:"n",l:"C1",m:"ganado"},{w:"caution",t:"n",l:"C1",m:"precaución"},
+  {w:"cautious",t:"adj",l:"C1",m:"cauteloso"},{w:"cease",t:"v",l:"C1",m:"cesar"},{w:"cemetery",t:"n",l:"C1",m:"cementerio"},
+  {w:"chamber",t:"n",l:"C1",m:"cámara"},{w:"chaos",t:"n",l:"C1",m:"caos"},{w:"characterize",t:"v",l:"C1",m:"caracterizar"},
+  {w:"charm",t:"n",l:"C1",m:"encanto"},{w:"charter",t:"n",l:"C1",m:"carta"},{w:"chronic",t:"adj",l:"C1",m:"crónico"},
+  {w:"chunk",t:"n",l:"C1",m:"trozo"},{w:"circulate",t:"v",l:"C1",m:"circular"},{w:"citizenship",t:"n",l:"C1",m:"ciudadanía"},
+  {w:"civic",t:"adj",l:"C1",m:"cívico"},{w:"civilian",t:"n",l:"C1",m:"civil"},{w:"clarify",t:"v",l:"C1",m:"aclarar"},
+  {w:"clarity",t:"n",l:"C1",m:"claridad"},{w:"clash",t:"n",l:"C1",m:"choque"},{w:"classify",t:"v",l:"C1",m:"clasificar"},
+  {w:"cling",t:"v",l:"C1",m:"aferrarse"},{w:"clinical",t:"adj",l:"C1",m:"clínico"},{w:"closure",t:"n",l:"C1",m:"cierre"},
+  {w:"cluster",t:"n",l:"C1",m:"grupo"},{w:"coalition",t:"n",l:"C1",m:"coalición"},{w:"coastal",t:"adj",l:"C1",m:"costero"},
+  {w:"cocktail",t:"n",l:"C1",m:"cóctel"},{w:"cognitive",t:"adj",l:"C1",m:"cognitivo"},{w:"coincide",t:"v",l:"C1",m:"coincidir"},
+  {w:"collaborate",t:"v",l:"C1",m:"colaborar"},{w:"collective",t:"adj",l:"C1",m:"colectivo"},{w:"collision",t:"n",l:"C1",m:"colisión"},
+  {w:"colonial",t:"adj",l:"C1",m:"colonial"},{w:"combat",t:"n",l:"C1",m:"combate"},{w:"commence",t:"v",l:"C1",m:"comenzar"},
+  {w:"commentary",t:"n",l:"C1",m:"comentario"},{w:"commerce",t:"n",l:"C1",m:"comercio"},{w:"commodity",t:"n",l:"C1",m:"mercancía"},
+  {w:"communist",t:"adj",l:"C1",m:"comunista"},{w:"companion",t:"n",l:"C1",m:"compañero"},{w:"comparable",t:"adj",l:"C1",m:"comparable"},
+  {w:"compassion",t:"n",l:"C1",m:"compasión"},{w:"compel",t:"v",l:"C1",m:"obligar"},{w:"compelling",t:"adj",l:"C1",m:"convincente"},
+  {w:"compensate",t:"v",l:"C1",m:"compensar"},{w:"competence",t:"n",l:"C1",m:"competencia"},{w:"compile",t:"v",l:"C1",m:"compilar"},
+  {w:"complement",t:"v",l:"C1",m:"complementar"},{w:"complexity",t:"n",l:"C1",m:"complejidad"},{w:"compliance",t:"n",l:"C1",m:"cumplimiento"},
+  {w:"comply",t:"v",l:"C1",m:"cumplir"},{w:"compromise",t:"n",l:"C1",m:"compromiso"},{w:"compute",t:"v",l:"C1",m:"calcular"},
+  {w:"conceal",t:"v",l:"C1",m:"ocultar"},{w:"concede",t:"v",l:"C1",m:"conceder"},{w:"conceive",t:"v",l:"C1",m:"concebir"},
+  {w:"conception",t:"n",l:"C1",m:"concepción"},{w:"condemn",t:"v",l:"C1",m:"condenar"},{w:"confer",t:"v",l:"C1",m:"conferir"},
+  {w:"confession",t:"n",l:"C1",m:"confesión"},{w:"confine",t:"v",l:"C1",m:"confinar"},{w:"confront",t:"v",l:"C1",m:"confrontar"},
+  {w:"confrontation",t:"n",l:"C1",m:"confrontación"},{w:"congratulate",t:"v",l:"C1",m:"felicitar"},{w:"congregation",t:"n",l:"C1",m:"congregación"},
+  {w:"conquer",t:"v",l:"C1",m:"conquistar"},{w:"conscience",t:"n",l:"C1",m:"conciencia"},{w:"consciousness",t:"n",l:"C1",m:"consciencia"},
+  {w:"consecutive",t:"adj",l:"C1",m:"consecutivo"},{w:"consensus",t:"n",l:"C1",m:"consenso"},{w:"consent",t:"n",l:"C1",m:"consentimiento"},
+  {w:"conserve",t:"v",l:"C1",m:"conservar"},{w:"consistency",t:"n",l:"C1",m:"consistencia"},{w:"consolidate",t:"v",l:"C1",m:"consolidar"},
+  {w:"conspiracy",t:"n",l:"C1",m:"conspiración"},{w:"constitute",t:"v",l:"C1",m:"constituir"},{w:"constitution",t:"n",l:"C1",m:"constitución"},
+  {w:"constraint",t:"n",l:"C1",m:"restricción"},{w:"consult",t:"v",l:"C1",m:"consultar"},{w:"contemplate",t:"v",l:"C1",m:"contemplar"},
+  {w:"contempt",t:"n",l:"C1",m:"desprecio"},{w:"contend",t:"v",l:"C1",m:"competir"},{w:"contender",t:"n",l:"C1",m:"contendiente"},
+  {w:"contention",t:"n",l:"C1",m:"disputa"},{w:"contractor",t:"n",l:"C1",m:"contratista"},{w:"contradiction",t:"n",l:"C1",m:"contradicción"},
+  {w:"contrary",t:"adj",l:"C1",m:"contrario"},{w:"contributor",t:"n",l:"C1",m:"contribuyente"},{w:"conversion",t:"n",l:"C1",m:"conversión"},
+  {w:"convey",t:"v",l:"C1",m:"transmitir"},{w:"convict",t:"v",l:"C1",m:"condenar"},{w:"conviction",t:"n",l:"C1",m:"condena"},
+  {w:"cooperate",t:"v",l:"C1",m:"cooperar"},{w:"coordinate",t:"v",l:"C1",m:"coordinar"},{w:"coordinator",t:"n",l:"C1",m:"coordinador"},
+  {w:"cop",t:"n",l:"C1",m:"policía"},{w:"cope",t:"v",l:"C1",m:"lidiar"},{w:"copper",t:"n",l:"C1",m:"cobre"},
+  {w:"copyright",t:"n",l:"C1",m:"derechos de autor"},{w:"correlate",t:"v",l:"C1",m:"correlacionar"},{w:"correspond",t:"v",l:"C1",m:"corresponder"},
+  {w:"correspondent",t:"n",l:"C1",m:"corresponsal"},{w:"corridor",t:"n",l:"C1",m:"corredor"},{w:"corrupt",t:"adj",l:"C1",m:"corrupto"},
+  {w:"corruption",t:"n",l:"C1",m:"corrupción"},{w:"costly",t:"adj",l:"C1",m:"costoso"},{w:"councillor",t:"n",l:"C1",m:"concejal"},
+  {w:"counselling",t:"n",l:"C1",m:"asesoramiento"},{w:"counterpart",t:"n",l:"C1",m:"contraparte"},{w:"countless",t:"adj",l:"C1",m:"innumerables"},
+  {w:"coup",t:"n",l:"C1",m:"golpe de estado"},{w:"courtesy",t:"n",l:"C1",m:"cortesía"},{w:"craft",t:"n",l:"C1",m:"artesanía"},
+  {w:"crawl",t:"v",l:"C1",m:"arrastrarse"},{w:"creator",t:"n",l:"C1",m:"creador"},{w:"credibility",t:"n",l:"C1",m:"credibilidad"},
+  {w:"credible",t:"adj",l:"C1",m:"creíble"},{w:"creep",t:"v",l:"C1",m:"arrastrarse"},{w:"critique",t:"n",l:"C1",m:"crítica"},
+  {w:"crown",t:"n",l:"C1",m:"corona"},{w:"crude",t:"adj",l:"C1",m:"crudo"},{w:"crush",t:"v",l:"C1",m:"aplastar"},
+  {w:"crystal",t:"n",l:"C1",m:"cristal"},{w:"cult",t:"n",l:"C1",m:"culto"},{w:"cultivate",t:"v",l:"C1",m:"cultivar"},
+  {w:"curiosity",t:"n",l:"C1",m:"curiosidad"},{w:"custody",t:"n",l:"C1",m:"custodia"},{w:"cutting",t:"n",l:"C1",m:"corte"},
+  {w:"cynical",t:"adj",l:"C1",m:"cínico"},{w:"dam",t:"n",l:"C1",m:"presa"},{w:"damaging",t:"adj",l:"C1",m:"dañino"},
+  {w:"dawn",t:"n",l:"C1",m:"amanecer"},{w:"decisive",t:"adj",l:"C1",m:"decisivo"},{w:"declaration",t:"n",l:"C1",m:"declaración"},
+  {w:"dedicated",t:"adj",l:"C1",m:"dedicado"},{w:"dedication",t:"n",l:"C1",m:"dedicación"},{w:"deed",t:"n",l:"C1",m:"acción"},
+  {w:"deem",t:"v",l:"C1",m:"considerar"},{w:"default",t:"n",l:"C1",m:"predeterminado"},{w:"defect",t:"n",l:"C1",m:"defecto"},
+  {w:"defensive",t:"adj",l:"C1",m:"defensivo"},{w:"deficiency",t:"n",l:"C1",m:"deficiencia"},{w:"deficit",t:"n",l:"C1",m:"déficit"},
+  {w:"defy",t:"v",l:"C1",m:"desafiar"},{w:"delegate",t:"n",l:"C1",m:"delegado"},{w:"delicate",t:"adj",l:"C1",m:"delicado"},
+  {w:"demon",t:"n",l:"C1",m:"demonio"},{w:"denial",t:"n",l:"C1",m:"negación"},{w:"denounce",t:"v",l:"C1",m:"denunciar"},
+  {w:"dense",t:"adj",l:"C1",m:"denso"},{w:"density",t:"n",l:"C1",m:"densidad"},{w:"depict",t:"v",l:"C1",m:"representar"},
+  {w:"deploy",t:"v",l:"C1",m:"desplegar"},{w:"deprive",t:"v",l:"C1",m:"privar"},{w:"deputy",t:"n",l:"C1",m:"diputado"},
+  {w:"descend",t:"v",l:"C1",m:"descender"},{w:"descent",t:"n",l:"C1",m:"descenso"},{w:"designate",t:"v",l:"C1",m:"designar"},
+  {w:"desirable",t:"adj",l:"C1",m:"deseable"},{w:"desktop",t:"n",l:"C1",m:"escritorio"},{w:"detain",t:"v",l:"C1",m:"detener"},
+  {w:"detection",t:"n",l:"C1",m:"detección"},{w:"detention",t:"n",l:"C1",m:"detención"},{w:"deteriorate",t:"v",l:"C1",m:"deteriorar"},
+  {w:"devastate",t:"v",l:"C1",m:"devastar"},{w:"devil",t:"n",l:"C1",m:"diablo"},{w:"devise",t:"v",l:"C1",m:"idear"},
+  {w:"diagnose",t:"v",l:"C1",m:"diagnosticar"},{w:"diagnosis",t:"n",l:"C1",m:"diagnóstico"},{w:"dictate",t:"v",l:"C1",m:"dictar"},
+  {w:"dictator",t:"n",l:"C1",m:"dictador"},{w:"differentiate",t:"v",l:"C1",m:"diferenciar"},{w:"dignity",t:"n",l:"C1",m:"dignidad"},
+  {w:"dilemma",t:"n",l:"C1",m:"dilema"},{w:"dimension",t:"n",l:"C1",m:"dimensión"},{w:"diminish",t:"v",l:"C1",m:"disminuir"},
+  {w:"dip",t:"v",l:"C1",m:"sumergir"},{w:"diplomat",t:"n",l:"C1",m:"diplomático"},{w:"directory",t:"n",l:"C1",m:"directorio"},
+  {w:"discard",t:"v",l:"C1",m:"descartar"},{w:"discharge",t:"v",l:"C1",m:"descargar"},{w:"disclose",t:"v",l:"C1",m:"revelar"},
+  {w:"discourse",t:"n",l:"C1",m:"discurso"},{w:"discretion",t:"n",l:"C1",m:"discreción"},{w:"discrimination",t:"n",l:"C1",m:"discriminación"},
+  {w:"dismissal",t:"n",l:"C1",m:"despido"},{w:"displace",t:"v",l:"C1",m:"desplazar"},{w:"disposal",t:"n",l:"C1",m:"disposición"},
+  {w:"dispose",t:"v",l:"C1",m:"disponer"},{w:"dispute",t:"n",l:"C1",m:"disputa"},{w:"disrupt",t:"v",l:"C1",m:"interrumpir"},
+  {w:"disruption",t:"n",l:"C1",m:"interrupción"},{w:"dissolve",t:"v",l:"C1",m:"disolver"},{w:"distinction",t:"n",l:"C1",m:"distinción"},
+  {w:"distinctive",t:"adj",l:"C1",m:"distintivo"},{w:"distort",t:"v",l:"C1",m:"distorsionar"},{w:"distress",t:"n",l:"C1",m:"angustia"},
+  {w:"disturbing",t:"adj",l:"C1",m:"perturbador"},{w:"divert",t:"v",l:"C1",m:"desviar"},{w:"divine",t:"adj",l:"C1",m:"divino"},
+  {w:"doctrine",t:"n",l:"C1",m:"doctrina"},{w:"domain",t:"n",l:"C1",m:"dominio"},{w:"dominance",t:"n",l:"C1",m:"dominancia"},
+  {w:"donor",t:"n",l:"C1",m:"donante"},{w:"dose",t:"n",l:"C1",m:"dosis"},{w:"drain",t:"v",l:"C1",m:"drenar"},
+  {w:"drift",t:"v",l:"C1",m:"derivar"},{w:"driving",t:"adj",l:"C1",m:"impulsor"},{w:"drown",t:"v",l:"C1",m:"ahogar"},
+  {w:"dual",t:"adj",l:"C1",m:"dual"},{w:"dub",t:"v",l:"C1",m:"doblar"},{w:"dumb",t:"adj",l:"C1",m:"mudo"},
+  {w:"duo",t:"n",l:"C1",m:"dúo"},{w:"eager",t:"adj",l:"C1",m:"ansioso"},{w:"earnings",t:"n",l:"C1",m:"ganancias"},
+  {w:"ease",t:"n",l:"C1",m:"facilidad"},{w:"echo",t:"n",l:"C1",m:"eco"},{w:"ecological",t:"adj",l:"C1",m:"ecológico"},
+  {w:"educator",t:"n",l:"C1",m:"educador"},{w:"effectiveness",t:"n",l:"C1",m:"efectividad"},{w:"efficiency",t:"n",l:"C1",m:"eficiencia"},
+  {w:"ego",t:"n",l:"C1",m:"ego"},{w:"elaborate",t:"adj",l:"C1",m:"elaborado"},{w:"electoral",t:"adj",l:"C1",m:"electoral"},
+  {w:"elevate",t:"v",l:"C1",m:"elevar"},{w:"eligible",t:"adj",l:"C1",m:"elegible"},{w:"elite",t:"n",l:"C1",m:"élite"},
+  {w:"embark",t:"v",l:"C1",m:"embarcarse"},{w:"embarrassment",t:"n",l:"C1",m:"vergüenza"},{w:"embassy",t:"n",l:"C1",m:"embajada"},
+  {w:"embed",t:"v",l:"C1",m:"incrustar"},{w:"embody",t:"v",l:"C1",m:"encarnar"},{w:"emergence",t:"n",l:"C1",m:"emergencia"},
+  {w:"empower",t:"v",l:"C1",m:"empoderar"},{w:"enact",t:"v",l:"C1",m:"promulgar"},{w:"encompass",t:"v",l:"C1",m:"abarcar"},
+  {w:"encouragement",t:"n",l:"C1",m:"aliento"},{w:"encouraging",t:"adj",l:"C1",m:"alentador"},{w:"endeavour",t:"n",l:"C1",m:"esfuerzo"},
+  {w:"endless",t:"adj",l:"C1",m:"interminable"},{w:"endorse",t:"v",l:"C1",m:"respaldar"},{w:"endure",t:"v",l:"C1",m:"soportar"},
+  {w:"enforce",t:"v",l:"C1",m:"hacer cumplir"},{w:"enforcement",t:"n",l:"C1",m:"aplicación"},{w:"engagement",t:"n",l:"C1",m:"compromiso"},
+  {w:"engaging",t:"adj",l:"C1",m:"atractivo"},{w:"enrich",t:"v",l:"C1",m:"enriquecer"},{w:"enrol",t:"v",l:"C1",m:"inscribir"},
+  {w:"ensue",t:"v",l:"C1",m:"seguir"},{w:"enterprise",t:"n",l:"C1",m:"empresa"},{w:"enthusiast",t:"n",l:"C1",m:"entusiasta"},
+  {w:"entitle",t:"v",l:"C1",m:"dar derecho"},{w:"entity",t:"n",l:"C1",m:"entidad"},{w:"epidemic",t:"n",l:"C1",m:"epidemia"},
+  {w:"equality",t:"n",l:"C1",m:"igualdad"},{w:"equation",t:"n",l:"C1",m:"ecuación"},{w:"erect",t:"v",l:"C1",m:"erigir"},
+  {w:"escalate",t:"v",l:"C1",m:"escalar"},{w:"essence",t:"n",l:"C1",m:"esencia"},{w:"establishment",t:"n",l:"C1",m:"establecimiento"},
+  {w:"eternal",t:"adj",l:"C1",m:"eterno"},{w:"evacuate",t:"v",l:"C1",m:"evacuar"},{w:"evoke",t:"v",l:"C1",m:"evocar"},
+  {w:"evolutionary",t:"adj",l:"C1",m:"evolutivo"},{w:"exaggerate",t:"v",l:"C1",m:"exagerar"},{w:"excellence",t:"n",l:"C1",m:"excelencia"},
+  {w:"exceptional",t:"adj",l:"C1",m:"excepcional"},{w:"excess",t:"n",l:"C1",m:"exceso"},{w:"exclusion",t:"n",l:"C1",m:"exclusión"},
+  {w:"exclusive",t:"adj",l:"C1",m:"exclusivo"},{w:"execute",t:"v",l:"C1",m:"ejecutar"},{w:"execution",t:"n",l:"C1",m:"ejecución"},
+  {w:"exert",t:"v",l:"C1",m:"ejercer"},{w:"exile",t:"n",l:"C1",m:"exilio"},{w:"exit",t:"v",l:"C1",m:"salir"},
+  {w:"expenditure",t:"n",l:"C1",m:"gasto"},{w:"experimental",t:"adj",l:"C1",m:"experimental"},{w:"expire",t:"v",l:"C1",m:"expirar"},
+  {w:"explicit",t:"adj",l:"C1",m:"explícito"},{w:"exploitation",t:"n",l:"C1",m:"explotación"},{w:"explosive",t:"adj",l:"C1",m:"explosivo"},
+  {w:"extract",t:"v",l:"C1",m:"extraer"},{w:"extremist",t:"n",l:"C1",m:"extremista"},{w:"fabric",t:"n",l:"C1",m:"tela"},
+  {w:"facilitate",t:"v",l:"C1",m:"facilitar"},{w:"faction",t:"n",l:"C1",m:"facción"},{w:"faculty",t:"n",l:"C1",m:"facultad"},
+  {w:"fade",t:"v",l:"C1",m:"desvanecerse"},{w:"fairness",t:"n",l:"C1",m:"equidad"},{w:"fatal",t:"adj",l:"C1",m:"fatal"},
+  {w:"fate",t:"n",l:"C1",m:"destino"},{w:"favourable",t:"adj",l:"C1",m:"favorable"},{w:"feat",t:"n",l:"C1",m:"hazaña"},
+  {w:"feminist",t:"n",l:"C1",m:"feminista"},{w:"fibre",t:"n",l:"C1",m:"fibra"},{w:"fierce",t:"adj",l:"C1",m:"feroz"},
+  {w:"filter",t:"n",l:"C1",m:"filtro"},{w:"fine",t:"n",l:"C1",m:"multa"},{w:"firearm",t:"n",l:"C1",m:"arma de fuego"},
+  {w:"fit",t:"n",l:"C1",m:"ajuste"},{w:"fixture",t:"n",l:"C1",m:"accesorio"},{w:"flaw",t:"n",l:"C1",m:"defecto"},
+  {w:"flawed",t:"adj",l:"C1",m:"defectuoso"},{w:"flee",t:"v",l:"C1",m:"huir"},{w:"fleet",t:"n",l:"C1",m:"flota"},
+  {w:"flesh",t:"n",l:"C1",m:"carne"},{w:"flexibility",t:"n",l:"C1",m:"flexibilidad"},{w:"flourish",t:"v",l:"C1",m:"florecer"},
+  {w:"fluid",t:"n",l:"C1",m:"fluido"},{w:"footage",t:"n",l:"C1",m:"metraje"},{w:"foreigner",t:"n",l:"C1",m:"extranjero"},
+  {w:"forge",t:"v",l:"C1",m:"forjar"},{w:"formula",t:"n",l:"C1",m:"fórmula"},{w:"formulate",t:"v",l:"C1",m:"formular"},
+  {w:"forth",t:"adv",l:"C1",m:"adelante"},{w:"forthcoming",t:"adj",l:"C1",m:"próximo"},{w:"foster",t:"v",l:"C1",m:"fomentar"},
+  {w:"fraction",t:"n",l:"C1",m:"fracción"},{w:"fragile",t:"adj",l:"C1",m:"frágil"},{w:"franchise",t:"n",l:"C1",m:"franquicia"},
+  {w:"frankly",t:"adv",l:"C1",m:"francamente"},{w:"frustrated",t:"adj",l:"C1",m:"frustrado"},{w:"frustrating",t:"adj",l:"C1",m:"frustrante"},
+  {w:"frustration",t:"n",l:"C1",m:"frustración"},{w:"functional",t:"adj",l:"C1",m:"funcional"},{w:"fundraising",t:"n",l:"C1",m:"recaudación"},
+  {w:"funeral",t:"n",l:"C1",m:"funeral"},{w:"furious",t:"adj",l:"C1",m:"furioso"},{w:"gallon",t:"n",l:"C1",m:"galón"},
+  {w:"gambling",t:"n",l:"C1",m:"juego"},{w:"gathering",t:"n",l:"C1",m:"reunión"},{w:"gaze",t:"v",l:"C1",m:"mirar fijamente"},
+  {w:"gear",t:"n",l:"C1",m:"equipo"},{w:"generic",t:"adj",l:"C1",m:"genérico"},{w:"genocide",t:"n",l:"C1",m:"genocidio"},
+  {w:"glance",t:"n",l:"C1",m:"vistazo"},{w:"glimpse",t:"n",l:"C1",m:"vislumbre"},{w:"glorious",t:"adj",l:"C1",m:"glorioso"},
+  {w:"glory",t:"n",l:"C1",m:"gloria"},{w:"governance",t:"n",l:"C1",m:"gobernanza"},{w:"grace",t:"n",l:"C1",m:"gracia"},
+  {w:"grasp",t:"v",l:"C1",m:"comprender"},{w:"grave",t:"n",l:"C1",m:"tumba"},{w:"gravity",t:"n",l:"C1",m:"gravedad"},
+  {w:"grid",t:"n",l:"C1",m:"cuadrícula"},{w:"grief",t:"n",l:"C1",m:"dolor"},{w:"grin",t:"v",l:"C1",m:"sonreír"},
+  {w:"grind",t:"v",l:"C1",m:"moler"},{w:"grip",t:"n",l:"C1",m:"agarre"},{w:"gross",t:"adj",l:"C1",m:"bruto"},
+  {w:"guerrilla",t:"n",l:"C1",m:"guerrillero"},{w:"guidance",t:"n",l:"C1",m:"orientación"},{w:"guilt",t:"n",l:"C1",m:"culpa"},
+  {w:"gut",t:"n",l:"C1",m:"intestino"},{w:"habitat",t:"n",l:"C1",m:"hábitat"},{w:"hail",t:"v",l:"C1",m:"aclamar"},
+  {w:"halfway",t:"adv",l:"C1",m:"a mitad de camino"},{w:"halt",t:"v",l:"C1",m:"detener"},{w:"handful",t:"n",l:"C1",m:"puñado"},
+  {w:"handling",t:"n",l:"C1",m:"manejo"},{w:"handy",t:"adj",l:"C1",m:"práctico"},{w:"harassment",t:"n",l:"C1",m:"acoso"},
+  {w:"hardware",t:"n",l:"C1",m:"hardware"},{w:"harmony",t:"n",l:"C1",m:"armonía"},{w:"harsh",t:"adj",l:"C1",m:"duro"},
+  {w:"harvest",t:"n",l:"C1",m:"cosecha"},{w:"hatred",t:"n",l:"C1",m:"odio"},{w:"haunt",t:"v",l:"C1",m:"perseguir"},
+  {w:"hazard",t:"n",l:"C1",m:"peligro"},{w:"heighten",t:"v",l:"C1",m:"aumentar"},{w:"heritage",t:"n",l:"C1",m:"patrimonio"},
+  {w:"hierarchy",t:"n",l:"C1",m:"jerarquía"},{w:"homeland",t:"n",l:"C1",m:"patria"},{w:"hopeful",t:"adj",l:"C1",m:"esperanzado"},
+  {w:"horizon",t:"n",l:"C1",m:"horizonte"},{w:"horn",t:"n",l:"C1",m:"cuerno"},{w:"hostage",t:"n",l:"C1",m:"rehén"},
+  {w:"hostile",t:"adj",l:"C1",m:"hostil"},{w:"hostility",t:"n",l:"C1",m:"hostilidad"},{w:"humanitarian",t:"adj",l:"C1",m:"humanitario"},
+  {w:"humanity",t:"n",l:"C1",m:"humanidad"},{w:"humble",t:"adj",l:"C1",m:"humilde"},{w:"hydrogen",t:"n",l:"C1",m:"hidrógeno"},
+  {w:"identical",t:"adj",l:"C1",m:"idéntico"},{w:"identification",t:"n",l:"C1",m:"identificación"},{w:"ideological",t:"adj",l:"C1",m:"ideológico"},
+  {w:"ideology",t:"n",l:"C1",m:"ideología"},{w:"idiot",t:"n",l:"C1",m:"idiota"},{w:"ignorance",t:"n",l:"C1",m:"ignorancia"},
+  {w:"imagery",t:"n",l:"C1",m:"imaginería"},{w:"immense",t:"adj",l:"C1",m:"inmenso"},{w:"imminent",t:"adj",l:"C1",m:"inminente"},
+  {w:"implementation",t:"n",l:"C1",m:"implementación"},{w:"imprison",t:"v",l:"C1",m:"encarcelar"},{w:"inability",t:"n",l:"C1",m:"incapacidad"},
+  {w:"inadequate",t:"adj",l:"C1",m:"inadecuado"},{w:"inappropriate",t:"adj",l:"C1",m:"inapropiado"},{w:"incidence",t:"n",l:"C1",m:"incidencia"},
+  {w:"inclined",t:"adj",l:"C1",m:"inclinado"},{w:"inclusion",t:"n",l:"C1",m:"inclusión"},{w:"incur",t:"v",l:"C1",m:"incurrir"},
+  {w:"indicator",t:"n",l:"C1",m:"indicador"},{w:"indigenous",t:"adj",l:"C1",m:"indígena"},{w:"induce",t:"v",l:"C1",m:"inducir"},
+  {w:"indulge",t:"v",l:"C1",m:"complacer"},{w:"inequality",t:"n",l:"C1",m:"desigualdad"},{w:"infamous",t:"adj",l:"C1",m:"infame"},
+  {w:"infant",t:"n",l:"C1",m:"bebé"},{w:"infect",t:"v",l:"C1",m:"infectar"},{w:"inflict",t:"v",l:"C1",m:"infligir"},
+  {w:"influential",t:"adj",l:"C1",m:"influyente"},{w:"inherent",t:"adj",l:"C1",m:"inherente"},{w:"inhibit",t:"v",l:"C1",m:"inhibir"},
+  {w:"initiate",t:"v",l:"C1",m:"iniciar"},{w:"inject",t:"v",l:"C1",m:"inyectar"},{w:"injection",t:"n",l:"C1",m:"inyección"},
+  {w:"injustice",t:"n",l:"C1",m:"injusticia"},{w:"inmate",t:"n",l:"C1",m:"recluso"},{w:"insider",t:"n",l:"C1",m:"persona con información"},
+  {w:"inspect",t:"v",l:"C1",m:"inspeccionar"},{w:"inspection",t:"n",l:"C1",m:"inspección"},{w:"inspiration",t:"n",l:"C1",m:"inspiración"},
+  {w:"instinct",t:"n",l:"C1",m:"instinto"},{w:"institutional",t:"adj",l:"C1",m:"institucional"},{w:"instruct",t:"v",l:"C1",m:"instruir"},
+  {w:"instrumental",t:"adj",l:"C1",m:"instrumental"},{w:"insufficient",t:"adj",l:"C1",m:"insuficiente"},{w:"insult",t:"n",l:"C1",m:"insulto"},
+  {w:"intact",t:"adj",l:"C1",m:"intacto"},{w:"intake",t:"n",l:"C1",m:"consumo"},{w:"integral",t:"adj",l:"C1",m:"integral"},
+  {w:"integrated",t:"adj",l:"C1",m:"integrado"},{w:"integration",t:"n",l:"C1",m:"integración"},{w:"integrity",t:"n",l:"C1",m:"integridad"},
+  {w:"intensify",t:"v",l:"C1",m:"intensificar"},{w:"intensity",t:"n",l:"C1",m:"intensidad"},{w:"intensive",t:"adj",l:"C1",m:"intensivo"},
+  {w:"intent",t:"n",l:"C1",m:"intención"},{w:"interactive",t:"adj",l:"C1",m:"interactivo"},{w:"interface",t:"n",l:"C1",m:"interfaz"},
+  {w:"interfere",t:"v",l:"C1",m:"interferir"},{w:"interference",t:"n",l:"C1",m:"interferencia"},{w:"interim",t:"adj",l:"C1",m:"provisional"},
+  {w:"interior",t:"n",l:"C1",m:"interior"},{w:"intermediate",t:"adj",l:"C1",m:"intermedio"},{w:"intervene",t:"v",l:"C1",m:"intervenir"},
+  {w:"intervention",t:"n",l:"C1",m:"intervención"},{w:"intimate",t:"adj",l:"C1",m:"íntimo"},{w:"intriguing",t:"adj",l:"C1",m:"intrigante"},
+  {w:"investigator",t:"n",l:"C1",m:"investigador"},{w:"invisible",t:"adj",l:"C1",m:"invisible"},{w:"invoke",t:"v",l:"C1",m:"invocar"},
+  {w:"involvement",t:"n",l:"C1",m:"participación"},{w:"ironic",t:"adj",l:"C1",m:"irónico"},{w:"ironically",t:"adv",l:"C1",m:"irónicamente"},
+  {w:"irony",t:"n",l:"C1",m:"ironía"},{w:"irrelevant",t:"adj",l:"C1",m:"irrelevante"},{w:"isolation",t:"n",l:"C1",m:"aislamiento"},
+  {w:"judicial",t:"adj",l:"C1",m:"judicial"},{w:"junction",t:"n",l:"C1",m:"cruce"},{w:"jurisdiction",t:"n",l:"C1",m:"jurisdicción"},
+  {w:"just",t:"adj",l:"C1",m:"justo"},{w:"justification",t:"n",l:"C1",m:"justificación"},{w:"kidnap",t:"v",l:"C1",m:"secuestrar"},
+  {w:"kidney",t:"n",l:"C1",m:"riñón"},{w:"kingdom",t:"n",l:"C1",m:"reino"},{w:"lad",t:"n",l:"C1",m:"chico"},
+  {w:"landlord",t:"n",l:"C1",m:"propietario"},{w:"landmark",t:"n",l:"C1",m:"punto de referencia"},{w:"lap",t:"n",l:"C1",m:"vuelta"},
+  {w:"laser",t:"n",l:"C1",m:"láser"},{w:"latter",t:"adj",l:"C1",m:"último"},{w:"lawn",t:"n",l:"C1",m:"césped"},
+  {w:"lawsuit",t:"n",l:"C1",m:"demanda"},{w:"layout",t:"n",l:"C1",m:"diseño"},{w:"leak",t:"n",l:"C1",m:"fuga"},
+  {w:"leap",t:"v",l:"C1",m:"saltar"},{w:"legacy",t:"n",l:"C1",m:"legado"},{w:"legendary",t:"adj",l:"C1",m:"legendario"},
+  {w:"legislation",t:"n",l:"C1",m:"legislación"},{w:"legislative",t:"adj",l:"C1",m:"legislativo"},{w:"legislature",t:"n",l:"C1",m:"legislatura"},
+  {w:"legitimate",t:"adj",l:"C1",m:"legítimo"},{w:"lengthy",t:"adj",l:"C1",m:"extenso"},{w:"lesbian",t:"adj",l:"C1",m:"lesbiana"},
+  {w:"lesser",t:"adj",l:"C1",m:"menor"},{w:"lethal",t:"adj",l:"C1",m:"letal"},{w:"liable",t:"adj",l:"C1",m:"responsable"},
+  {w:"liberal",t:"adj",l:"C1",m:"liberal"},{w:"liberation",t:"n",l:"C1",m:"liberación"},{w:"liberty",t:"n",l:"C1",m:"libertad"},
+  {w:"license",t:"v",l:"C1",m:"licenciar"},{w:"lifelong",t:"adj",l:"C1",m:"de por vida"},{w:"likelihood",t:"n",l:"C1",m:"probabilidad"},
+  {w:"limb",t:"n",l:"C1",m:"extremidad"},{w:"linear",t:"adj",l:"C1",m:"lineal"},{w:"linger",t:"v",l:"C1",m:"persistir"},
+  {w:"listing",t:"n",l:"C1",m:"listado"},{w:"literacy",t:"n",l:"C1",m:"alfabetización"},{w:"liver",t:"n",l:"C1",m:"hígado"}
 ];
 
 // ============ APP STATE ============
@@ -1331,6 +1551,30 @@ function confirmReset() {
     localStorage.removeItem('oxfordWordsState');
     location.reload();
   }
+}
+
+// ============ SHARE ============
+function shareApp() {
+  const shareData = {
+    title: 'Oxford Words Master',
+    text: '¡Aprende inglés con las 5000 palabras más importantes! App gratuita con flashcards, quizzes y gamificación 📚🎮',
+    url: window.location.href
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch(err => console.log('Error sharing:', err));
+  } else {
+    copyLink();
+  }
+}
+
+function copyLink() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    showModal('✅', '¡Link Copiado!', 'Comparte este link con tus amigos:\n' + url);
+  }).catch(() => {
+    showModal('📋', 'Copia este link:', url);
+  });
 }
 
 // ============ HELPERS ============
