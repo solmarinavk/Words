@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#6c63ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="WordsMaster">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236c63ff' width='100' height='100' rx='20'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>📚</text></svg>">
+  <title>Oxford Words Master</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --orange: #FF8C42;
+      --green: #2D5A27;
+      --yellow: #FFD93D;
+      --blue: #4361EE;
+      --pink: #FF6B9D;
+      --cream: #FFF8F0;
+      --cream-dark: #F5EDE4;
+      --black: #1a1a1a;
+      --gray: #666;
+    }
+    body {
+      font-family: 'Nunito', -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .container { max-width: 500px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+
+    /* Checkerboard pattern */
+    .checker-bg {
+      background-image:
+        linear-gradient(45deg, var(--cream-dark) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--cream-dark) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--cream-dark) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--cream-dark) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    /* Header */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 20px; background: var(--cream);
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 3px solid var(--black);
+    }
+    .logo { font-size: 1.4rem; font-weight: 800; }
+    .logo span { color: var(--orange); }
+    .streak-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--yellow); padding: 8px 16px;
+      border-radius: 50px; color: var(--black); font-weight: 800;
+      border: 3px solid var(--black);
+      box-shadow: 4px 4px 0 var(--black);
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--cream); display: flex;
+      justify-content: space-around; padding: 12px 0 28px;
+      border-top: 3px solid var(--black); z-index: 100;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      color: var(--gray); text-decoration: none; font-size: 0.7rem;
+      transition: all 0.3s; cursor: pointer; background: none; border: none;
+      font-weight: 700;
+    }
+    .nav-item.active { color: var(--orange); transform: scale(1.1); }
+    .nav-item svg { width: 26px; height: 26px; margin-bottom: 4px; }
+
+    /* Cards - Blob organic shapes */
+    .card {
+      background: white; border-radius: 24px;
+      padding: 24px; margin-bottom: 16px;
+      border: 3px solid var(--black);
+      box-shadow: 6px 6px 0 var(--black);
+    }
+    .card-title { font-size: 1.1rem; margin-bottom: 15px; font-weight: 800; }
+
+    /* Progress Bar */
+    .progress-container { margin-bottom: 20px; }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 700; }
+    .progress-bar {
+      height: 16px; background: var(--cream-dark); border-radius: 50px; overflow: hidden;
+      border: 3px solid var(--black);
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--orange), var(--yellow));
+      border-radius: 50px; transition: width 0.5s ease;
+    }
+
+    /* Level Badge - Organic blob shape */
+    .level-display {
+      text-align: center; padding: 30px;
+      background: var(--green);
+      border-radius: 30px 60px 30px 60px;
+      margin-bottom: 20px;
+      border: 3px solid var(--black);
+      box-shadow: 6px 6px 0 var(--black);
+      color: white;
+    }
+    .level-circle {
+      width: 110px; height: 110px; border-radius: 50%;
+      background: conic-gradient(var(--yellow) var(--progress), rgba(255,255,255,0.2) 0);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 15px; position: relative;
+      border: 4px solid var(--black);
+    }
+    .level-circle::before {
+      content: ''; position: absolute;
+      width: 85px; height: 85px; background: var(--green);
+      border-radius: 50%;
+    }
+    .level-number {
+      position: relative; z-index: 1; font-size: 2.2rem; font-weight: 800;
+    }
+    .level-name { font-size: 1.2rem; font-weight: 800; margin-bottom: 5px; }
+    .xp-text { opacity: 0.9; font-weight: 600; }
+
+    /* Buttons - Chunky retro style */
+    .btn {
+      width: 100%; padding: 16px; border: 3px solid var(--black);
+      border-radius: 16px; font-size: 1rem; font-weight: 800;
+      cursor: pointer; transition: all 0.15s;
+      box-shadow: 4px 4px 0 var(--black);
+      font-family: inherit;
+    }
+    .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--black); }
+    .btn-primary { background: var(--orange); color: white; }
+    .btn-secondary { background: var(--cream-dark); color: var(--black); }
+    .btn-success { background: var(--green); color: white; }
+    .btn-danger { background: var(--pink); color: white; }
+    .btn-blue { background: var(--blue); color: white; }
+    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+
+    /* Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .stat-item {
+      background: white; padding: 20px; border-radius: 20px; text-align: center;
+      border: 3px solid var(--black); box-shadow: 4px 4px 0 var(--black);
+    }
+    .stat-item:nth-child(1) { background: var(--yellow); }
+    .stat-item:nth-child(2) { background: var(--pink); color: white; }
+    .stat-item:nth-child(3) { background: var(--blue); color: white; }
+    .stat-item:nth-child(4) { background: var(--green); color: white; }
+    .stat-value { font-size: 2rem; font-weight: 800; }
+    .stat-label { font-size: 0.8rem; font-weight: 700; margin-top: 5px; opacity: 0.9; }
+
+    /* Flashcard */
+    .flashcard-container { perspective: 1000px; margin: 20px 0; }
+    .flashcard {
+      width: 100%; min-height: 300px; position: relative;
+      transform-style: preserve-3d; transition: transform 0.6s;
+      cursor: pointer;
+    }
+    .flashcard.flipped { transform: rotateY(180deg); }
+    .flashcard-face {
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; border-radius: 30px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 30px; text-align: center;
+      border: 4px solid var(--black);
+      box-shadow: 8px 8px 0 var(--black);
+    }
+    .flashcard-front { background: white; }
+    .flashcard-back { background: var(--blue); color: white; transform: rotateY(180deg); }
+    .flashcard-word { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+    .flashcard-type { color: var(--gray); font-size: 1rem; margin-bottom: 15px; font-weight: 600; }
+    .flashcard-back .flashcard-type { color: rgba(255,255,255,0.8); }
+    .flashcard-level {
+      position: absolute; top: 15px; right: 15px;
+      background: var(--yellow); padding: 6px 14px;
+      border-radius: 50px; font-size: 0.85rem; font-weight: 800;
+      color: var(--black); border: 2px solid var(--black);
+    }
+    .flashcard-hint { font-size: 0.9rem; color: var(--gray); margin-top: 20px; font-weight: 600; }
+    .flashcard-back .flashcard-hint { color: rgba(255,255,255,0.7); }
+
+    /* Quiz */
+    .quiz-option {
+      width: 100%; padding: 18px 20px; margin-bottom: 12px;
+      background: white; border: 3px solid var(--black);
+      border-radius: 16px; color: var(--black);
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; text-align: left;
+      box-shadow: 4px 4px 0 var(--black);
+      font-family: inherit;
+    }
+    .quiz-option:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--black); }
+    .quiz-option:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--black); }
+    .quiz-option.correct { background: var(--green); color: white; }
+    .quiz-option.wrong { background: var(--pink); color: white; }
+    .quiz-progress { display: flex; gap: 6px; margin-bottom: 20px; }
+    .quiz-dot {
+      flex: 1; height: 10px; border-radius: 50px; background: var(--cream-dark);
+      border: 2px solid var(--black);
+    }
+    .quiz-dot.completed { background: var(--green); }
+    .quiz-dot.current { background: var(--yellow); }
+    .quiz-dot.wrong { background: var(--pink); }
+
+    /* Achievements */
+    .achievement {
+      display: flex; align-items: center; gap: 15px;
+      padding: 16px; background: white;
+      border-radius: 20px; margin-bottom: 12px;
+      border: 3px solid var(--black);
+      box-shadow: 4px 4px 0 var(--black);
+    }
+    .achievement.locked { opacity: 0.5; filter: grayscale(0.5); }
+    .achievement-icon { font-size: 2.2rem; }
+    .achievement-info { flex: 1; }
+    .achievement-name { font-weight: 800; margin-bottom: 3px; }
+    .achievement-desc { font-size: 0.85rem; color: var(--gray); font-weight: 600; }
+
+    /* Tabs */
+    .tabs {
+      display: flex; margin-bottom: 16px; background: var(--cream-dark);
+      border-radius: 16px; padding: 6px; border: 3px solid var(--black);
+    }
+    .tab {
+      flex: 1; padding: 12px 8px; text-align: center; border-radius: 12px;
+      cursor: pointer; transition: all 0.2s; background: none; border: none;
+      color: var(--gray); font-weight: 700; font-family: inherit; font-size: 0.85rem;
+    }
+    .tab.active { background: var(--orange); color: white; }
+
+    /* Word List */
+    .word-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 16px; background: white;
+      border-radius: 14px; margin-bottom: 10px;
+      border: 2px solid var(--black);
+    }
+    .word-text { font-weight: 700; }
+    .word-meta { display: flex; gap: 10px; align-items: center; }
+    .word-level-badge {
+      padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 800;
+      border: 2px solid var(--black);
+    }
+    .level-a1 { background: #4ade80; }
+    .level-a2 { background: #22d3ee; }
+    .level-b1 { background: #a78bfa; }
+    .level-b2 { background: var(--pink); }
+    .level-c1 { background: var(--orange); }
+    .mastery-indicator { font-size: 1.2rem; }
+
+    /* Views */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* Animations */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    .animate-slide { animation: slideUp 0.4s ease; }
+    .animate-bounce { animation: bounce 0.5s ease; }
+    .animate-wiggle { animation: wiggle 0.5s ease; }
+
+    /* Modal */
+    .modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); display: none;
+      align-items: center; justify-content: center; z-index: 200; padding: 20px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--cream); border-radius: 30px;
+      padding: 35px; text-align: center; max-width: 340px; width: 100%;
+      border: 4px solid var(--black);
+      box-shadow: 8px 8px 0 var(--black);
+    }
+    .modal-icon { font-size: 4rem; margin-bottom: 15px; }
+    .modal-title { font-size: 1.5rem; margin-bottom: 10px; font-weight: 800; }
+    .modal-text { color: var(--gray); margin-bottom: 20px; font-weight: 600; }
+
+    /* Settings */
+    .setting-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 0; border-bottom: 2px solid var(--cream-dark);
+      font-weight: 700;
+    }
+    .toggle {
+      width: 56px; height: 32px; background: var(--cream-dark);
+      border-radius: 50px; position: relative; cursor: pointer; transition: 0.3s;
+      border: 3px solid var(--black);
+    }
+    .toggle.active { background: var(--green); }
+    .toggle::after {
+      content: ''; position: absolute; width: 22px; height: 22px;
+      background: white; border-radius: 50%; top: 2px; left: 3px; transition: 0.3s;
+      border: 2px solid var(--black);
+    }
+    .toggle.active::after { left: 27px; }
+
+    /* Decorative elements */
+    .blob {
+      position: absolute; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      z-index: -1; opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 380px) {
+      .container { padding: 15px; }
+      .flashcard-word { font-size: 2rem; }
+      .level-circle { width: 90px; height: 90px; }
+      .level-circle::before { width: 70px; height: 70px; }
+      .level-number { font-size: 1.8rem; }
+      .stat-value { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Words<span>Master</span></div>
+    <div class="streak-badge" id="streakBadge">
+      <span>🔥</span>
+      <span id="streakCount">0</span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Dashboard View -->
+    <div id="dashboardView" class="view active">
+      <div class="level-display animate-slide">
+        <div class="level-circle" style="--progress: 0%">
+          <span class="level-number" id="userLevel">A1</span>
+        </div>
+        <div class="level-name" id="levelName">Principiante</div>
+        <div class="xp-text"><span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP</div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-label">
+          <span>Progreso Total</span>
+          <span id="totalProgress">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="wordsMastered">0</div>
+          <div class="stat-label">Palabras Dominadas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="wordsLearning">0</div>
+          <div class="stat-label">Aprendiendo</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="quizzesDone">0</div>
+          <div class="stat-label">Quizzes Completados</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="accuracy">0%</div>
+          <div class="stat-label">Precisión</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 20px;">
+        <h3 class="card-title">🎮 ¡A practicar!</h3>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="startFlashcards()">📚 Flashcards</button>
+          <button class="btn btn-blue" onclick="startQuiz()">🎯 Quiz</button>
+        </div>
+        <button class="btn btn-success" style="margin-top: 12px;" onclick="startQuickReview()">⚡ Repaso Rápido</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">📊 Tu nivel actual</h3>
+        <p style="font-weight: 600; color: var(--gray); margin-bottom: 12px;">Desbloquea niveles aprendiendo palabras</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <span class="word-level-badge level-a1">A1 ✓</span>
+          <span class="word-level-badge level-a2" id="a2Badge" style="opacity: 0.4">A2</span>
+          <span class="word-level-badge level-b1" id="b1Badge" style="opacity: 0.4">B1</span>
+          <span class="word-level-badge level-b2" id="b2Badge" style="opacity: 0.4">B2</span>
+          <span class="word-level-badge level-c1" id="c1Badge" style="opacity: 0.4">C1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flashcard View -->
+    <div id="flashcardView" class="view">
+      <div class="quiz-progress" id="flashcardProgress"></div>
+
+      <div class="flashcard-container">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-face flashcard-front">
+            <span class="flashcard-level" id="fcLevel">A1</span>
+            <div class="flashcard-word" id="fcWord">Word</div>
+            <div class="flashcard-type" id="fcType">noun</div>
+            <div class="flashcard-hint">Toca para ver significado</div>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <div class="flashcard-word" id="fcMeaning">Meaning</div>
+            <div class="flashcard-hint" style="color: rgba(255,255,255,0.7)">¿La conocías?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-danger" onclick="markWord(false)">❌ No la sé</button>
+        <button class="btn btn-success" onclick="markWord(true)">✅ La sé</button>
+      </div>
+
+      <button class="btn btn-secondary" style="margin-top: 15px;" onclick="showView('dashboard')">← Volver</button>
+    </div>
+
+    <!-- Quiz View -->
+    <div id="quizView" class="view">
+      <div class="quiz-progress" id="quizProgress"></div>
+
+      <div class="card">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <span class="flashcard-level" id="quizLevel">A1</span>
+        </div>
+        <h2 style="text-align: center; margin-bottom: 25px;" id="quizQuestion">Question</h2>
+        <div id="quizOptions"></div>
+      </div>
+
+      <button class="btn btn-secondary" style="margin-top: 15px;" onclick="showView('dashboard')">← Volver</button>
+    </div>
+
+    <!-- Words View -->
+    <div id="wordsView" class="view">
+      <div class="tabs">
+        <button class="tab active" onclick="filterWords('all')">Todas</button>
+        <button class="tab" onclick="filterWords('learning')">Aprendiendo</button>
+        <button class="tab" onclick="filterWords('mastered')">Dominadas</button>
+      </div>
+
+      <div class="tabs" style="margin-bottom: 15px;">
+        <button class="tab level-tab active" onclick="filterByLevel('all')">All</button>
+        <button class="tab level-tab" onclick="filterByLevel('A1')">A1</button>
+        <button class="tab level-tab" onclick="filterByLevel('A2')">A2</button>
+        <button class="tab level-tab" onclick="filterByLevel('B1')">B1</button>
+        <button class="tab level-tab" onclick="filterByLevel('B2')">B2</button>
+        <button class="tab level-tab" onclick="filterByLevel('C1')">C1</button>
+      </div>
+
+      <div id="wordsList"></div>
+    </div>
+
+    <!-- Achievements View -->
+    <div id="achievementsView" class="view">
+      <h2 style="margin-bottom: 20px;">🏆 Logros</h2>
+      <div id="achievementsList"></div>
+    </div>
+
+    <!-- Settings View -->
+    <div id="settingsView" class="view">
+      <h2 style="margin-bottom: 20px;">⚙️ Configuración</h2>
+
+      <div class="card">
+        <div class="setting-item">
+          <span>Notificaciones de Repaso</span>
+          <div class="toggle" id="notifToggle" onclick="toggleSetting('notifications')"></div>
+        </div>
+        <div class="setting-item">
+          <span>Modo Oscuro</span>
+          <div class="toggle active" id="darkToggle" onclick="toggleSetting('darkMode')"></div>
+        </div>
+        <div class="setting-item">
+          <span>Sonidos</span>
+          <div class="toggle" id="soundToggle" onclick="toggleSetting('sounds')"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Nivel de Dificultad</h3>
+        <div class="tabs">
+          <button class="tab" onclick="setDifficulty('easy')">Fácil</button>
+          <button class="tab active" onclick="setDifficulty('medium')">Medio</button>
+          <button class="tab" onclick="setDifficulty('hard')">Difícil</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Datos</h3>
+        <button class="btn btn-secondary" onclick="exportData()">📤 Exportar Progreso</button>
+        <button class="btn btn-danger" style="margin-top: 10px;" onclick="confirmReset()">🗑️ Reiniciar Todo</button>
+      </div>
+
+      <div class="card">
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+          Oxford Words Master v1.0<br>
+          Basado en Oxford 3000 & 5000
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <button class="nav-item active" onclick="showView('dashboard')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Inicio</span>
+    </button>
+    <button class="nav-item" onclick="showView('words')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+      <span>Palabras</span>
+    </button>
+    <button class="nav-item" onclick="showView('achievements')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2z"/></svg>
+      <span>Logros</span>
+    </button>
+    <button class="nav-item" onclick="showView('settings')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      <span>Ajustes</span>
+    </button>
+  </nav>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-icon" id="modalIcon">🎉</div>
+      <h3 class="modal-title" id="modalTitle">Title</h3>
+      <p class="modal-text" id="modalText">Text</p>
+      <button class="btn btn-primary" onclick="closeModal()">Continuar</button>
+    </div>
+  </div>
+
+<script>
+// ============ WORD DATA (Extracted from Oxford 3000 & 5000) ============
+const WORDS = [
+  // A1 Level - Beginner (most common)
+  {w:"a",t:"article",l:"A1",m:"un/una"},{w:"about",t:"prep",l:"A1",m:"sobre, acerca de"},{w:"after",t:"prep",l:"A1",m:"después de"},
+  {w:"again",t:"adv",l:"A1",m:"otra vez"},{w:"all",t:"det",l:"A1",m:"todo/toda"},{w:"also",t:"adv",l:"A1",m:"también"},
+  {w:"always",t:"adv",l:"A1",m:"siempre"},{w:"and",t:"conj",l:"A1",m:"y"},{w:"animal",t:"n",l:"A1",m:"animal"},
+  {w:"answer",t:"n/v",l:"A1",m:"respuesta/responder"},{w:"any",t:"det",l:"A1",m:"cualquier"},{w:"apple",t:"n",l:"A1",m:"manzana"},
+  {w:"ask",t:"v",l:"A1",m:"preguntar"},{w:"at",t:"prep",l:"A1",m:"en"},{w:"baby",t:"n",l:"A1",m:"bebé"},
+  {w:"back",t:"n/adv",l:"A1",m:"espalda/atrás"},{w:"bad",t:"adj",l:"A1",m:"malo"},{w:"bag",t:"n",l:"A1",m:"bolsa"},
+  {w:"ball",t:"n",l:"A1",m:"pelota"},{w:"banana",t:"n",l:"A1",m:"plátano"},{w:"be",t:"v",l:"A1",m:"ser/estar"},
+  {w:"beautiful",t:"adj",l:"A1",m:"hermoso"},{w:"because",t:"conj",l:"A1",m:"porque"},{w:"bed",t:"n",l:"A1",m:"cama"},
+  {w:"before",t:"prep",l:"A1",m:"antes"},{w:"begin",t:"v",l:"A1",m:"empezar"},{w:"behind",t:"prep",l:"A1",m:"detrás"},
+  {w:"believe",t:"v",l:"A1",m:"creer"},{w:"between",t:"prep",l:"A1",m:"entre"},{w:"big",t:"adj",l:"A1",m:"grande"},
+  {w:"black",t:"adj",l:"A1",m:"negro"},{w:"blue",t:"adj",l:"A1",m:"azul"},{w:"book",t:"n",l:"A1",m:"libro"},
+  {w:"boy",t:"n",l:"A1",m:"niño"},{w:"bread",t:"n",l:"A1",m:"pan"},{w:"breakfast",t:"n",l:"A1",m:"desayuno"},
+  {w:"bring",t:"v",l:"A1",m:"traer"},{w:"brother",t:"n",l:"A1",m:"hermano"},{w:"build",t:"v",l:"A1",m:"construir"},
+  {w:"bus",t:"n",l:"A1",m:"autobús"},{w:"business",t:"n",l:"A1",m:"negocio"},{w:"but",t:"conj",l:"A1",m:"pero"},
+  {w:"buy",t:"v",l:"A1",m:"comprar"},{w:"by",t:"prep",l:"A1",m:"por"},{w:"call",t:"v",l:"A1",m:"llamar"},
+  {w:"can",t:"v",l:"A1",m:"poder"},{w:"car",t:"n",l:"A1",m:"coche"},{w:"cat",t:"n",l:"A1",m:"gato"},
+  {w:"chair",t:"n",l:"A1",m:"silla"},{w:"child",t:"n",l:"A1",m:"niño/a"},{w:"city",t:"n",l:"A1",m:"ciudad"},
+  {w:"class",t:"n",l:"A1",m:"clase"},{w:"clean",t:"adj/v",l:"A1",m:"limpio/limpiar"},{w:"close",t:"v",l:"A1",m:"cerrar"},
+  {w:"clothes",t:"n",l:"A1",m:"ropa"},{w:"coffee",t:"n",l:"A1",m:"café"},{w:"cold",t:"adj",l:"A1",m:"frío"},
+  {w:"color",t:"n",l:"A1",m:"color"},{w:"come",t:"v",l:"A1",m:"venir"},{w:"computer",t:"n",l:"A1",m:"computadora"},
+  {w:"cook",t:"v",l:"A1",m:"cocinar"},{w:"country",t:"n",l:"A1",m:"país"},{w:"create",t:"v",l:"A1",m:"crear"},
+  {w:"dance",t:"v/n",l:"A1",m:"bailar/baile"},{w:"day",t:"n",l:"A1",m:"día"},{w:"die",t:"v",l:"A1",m:"morir"},
+  {w:"different",t:"adj",l:"A1",m:"diferente"},{w:"dinner",t:"n",l:"A1",m:"cena"},{w:"do",t:"v",l:"A1",m:"hacer"},
+  {w:"doctor",t:"n",l:"A1",m:"doctor"},{w:"dog",t:"n",l:"A1",m:"perro"},{w:"door",t:"n",l:"A1",m:"puerta"},
+  {w:"down",t:"adv",l:"A1",m:"abajo"},{w:"drink",t:"v/n",l:"A1",m:"beber/bebida"},{w:"drive",t:"v",l:"A1",m:"conducir"},
+  {w:"eat",t:"v",l:"A1",m:"comer"},{w:"egg",t:"n",l:"A1",m:"huevo"},{w:"end",t:"n/v",l:"A1",m:"fin/terminar"},
+  {w:"enjoy",t:"v",l:"A1",m:"disfrutar"},{w:"every",t:"det",l:"A1",m:"cada"},{w:"example",t:"n",l:"A1",m:"ejemplo"},
+  {w:"eye",t:"n",l:"A1",m:"ojo"},{w:"face",t:"n",l:"A1",m:"cara"},{w:"family",t:"n",l:"A1",m:"familia"},
+  {w:"famous",t:"adj",l:"A1",m:"famoso"},{w:"fast",t:"adj/adv",l:"A1",m:"rápido"},{w:"father",t:"n",l:"A1",m:"padre"},
+  {w:"feel",t:"v",l:"A1",m:"sentir"},{w:"find",t:"v",l:"A1",m:"encontrar"},{w:"finish",t:"v",l:"A1",m:"terminar"},
+  {w:"first",t:"adj",l:"A1",m:"primero"},{w:"fish",t:"n",l:"A1",m:"pez/pescado"},{w:"floor",t:"n",l:"A1",m:"piso"},
+  {w:"flower",t:"n",l:"A1",m:"flor"},{w:"fly",t:"v",l:"A1",m:"volar"},{w:"food",t:"n",l:"A1",m:"comida"},
+  {w:"foot",t:"n",l:"A1",m:"pie"},{w:"for",t:"prep",l:"A1",m:"para"},{w:"forget",t:"v",l:"A1",m:"olvidar"},
+  {w:"friend",t:"n",l:"A1",m:"amigo"},{w:"from",t:"prep",l:"A1",m:"de/desde"},{w:"fruit",t:"n",l:"A1",m:"fruta"},
+  {w:"game",t:"n",l:"A1",m:"juego"},{w:"get",t:"v",l:"A1",m:"obtener"},{w:"girl",t:"n",l:"A1",m:"niña"},
+  {w:"give",t:"v",l:"A1",m:"dar"},{w:"go",t:"v",l:"A1",m:"ir"},{w:"good",t:"adj",l:"A1",m:"bueno"},
+  {w:"great",t:"adj",l:"A1",m:"genial"},{w:"green",t:"adj",l:"A1",m:"verde"},{w:"hair",t:"n",l:"A1",m:"cabello"},
+  {w:"hand",t:"n",l:"A1",m:"mano"},{w:"happy",t:"adj",l:"A1",m:"feliz"},{w:"have",t:"v",l:"A1",m:"tener"},
+  {w:"he",t:"pron",l:"A1",m:"él"},{w:"head",t:"n",l:"A1",m:"cabeza"},{w:"hear",t:"v",l:"A1",m:"escuchar"},
+  {w:"hello",t:"excl",l:"A1",m:"hola"},{w:"help",t:"v/n",l:"A1",m:"ayudar/ayuda"},{w:"here",t:"adv",l:"A1",m:"aquí"},
+  {w:"home",t:"n",l:"A1",m:"casa/hogar"},{w:"horse",t:"n",l:"A1",m:"caballo"},{w:"hospital",t:"n",l:"A1",m:"hospital"},
+  {w:"hot",t:"adj",l:"A1",m:"caliente"},{w:"hotel",t:"n",l:"A1",m:"hotel"},{w:"hour",t:"n",l:"A1",m:"hora"},
+  {w:"house",t:"n",l:"A1",m:"casa"},{w:"how",t:"adv",l:"A1",m:"cómo"},{w:"I",t:"pron",l:"A1",m:"yo"},
+  {w:"idea",t:"n",l:"A1",m:"idea"},{w:"if",t:"conj",l:"A1",m:"si"},{w:"important",t:"adj",l:"A1",m:"importante"},
+  {w:"in",t:"prep",l:"A1",m:"en"},{w:"interesting",t:"adj",l:"A1",m:"interesante"},{w:"internet",t:"n",l:"A1",m:"internet"},
+  {w:"it",t:"pron",l:"A1",m:"ello"},{w:"job",t:"n",l:"A1",m:"trabajo"},{w:"just",t:"adv",l:"A1",m:"solo/justo"},
+  {w:"keep",t:"v",l:"A1",m:"mantener"},{w:"kind",t:"n",l:"A1",m:"tipo/clase"},{w:"know",t:"v",l:"A1",m:"saber"},
+  {w:"language",t:"n",l:"A1",m:"idioma"},{w:"large",t:"adj",l:"A1",m:"grande"},{w:"last",t:"adj",l:"A1",m:"último"},
+  {w:"late",t:"adj",l:"A1",m:"tarde"},{w:"learn",t:"v",l:"A1",m:"aprender"},{w:"leave",t:"v",l:"A1",m:"dejar/salir"},
+  {w:"left",t:"adj",l:"A1",m:"izquierda"},{w:"let",t:"v",l:"A1",m:"dejar/permitir"},{w:"letter",t:"n",l:"A1",m:"carta/letra"},
+  {w:"library",t:"n",l:"A1",m:"biblioteca"},{w:"life",t:"n",l:"A1",m:"vida"},{w:"light",t:"n",l:"A1",m:"luz"},
+  {w:"like",t:"v/prep",l:"A1",m:"gustar/como"},{w:"line",t:"n",l:"A1",m:"línea"},{w:"listen",t:"v",l:"A1",m:"escuchar"},
+  {w:"little",t:"adj",l:"A1",m:"pequeño"},{w:"live",t:"v",l:"A1",m:"vivir"},{w:"long",t:"adj",l:"A1",m:"largo"},
+  {w:"look",t:"v",l:"A1",m:"mirar"},{w:"lose",t:"v",l:"A1",m:"perder"},{w:"lot",t:"n",l:"A1",m:"mucho"},
+  {w:"love",t:"v/n",l:"A1",m:"amar/amor"},{w:"lunch",t:"n",l:"A1",m:"almuerzo"},{w:"make",t:"v",l:"A1",m:"hacer"},
+  {w:"man",t:"n",l:"A1",m:"hombre"},{w:"many",t:"det",l:"A1",m:"muchos"},{w:"market",t:"n",l:"A1",m:"mercado"},
+  {w:"may",t:"v",l:"A1",m:"poder"},{w:"me",t:"pron",l:"A1",m:"me/mí"},{w:"mean",t:"v",l:"A1",m:"significar"},
+  {w:"meet",t:"v",l:"A1",m:"conocer"},{w:"milk",t:"n",l:"A1",m:"leche"},{w:"minute",t:"n",l:"A1",m:"minuto"},
+  {w:"money",t:"n",l:"A1",m:"dinero"},{w:"month",t:"n",l:"A1",m:"mes"},{w:"more",t:"det",l:"A1",m:"más"},
+  {w:"morning",t:"n",l:"A1",m:"mañana"},{w:"most",t:"det",l:"A1",m:"la mayoría"},{w:"mother",t:"n",l:"A1",m:"madre"},
+  {w:"movie",t:"n",l:"A1",m:"película"},{w:"much",t:"det",l:"A1",m:"mucho"},{w:"music",t:"n",l:"A1",m:"música"},
+  {w:"must",t:"v",l:"A1",m:"deber"},{w:"my",t:"det",l:"A1",m:"mi"},{w:"name",t:"n",l:"A1",m:"nombre"},
+  {w:"near",t:"prep",l:"A1",m:"cerca"},{w:"need",t:"v",l:"A1",m:"necesitar"},{w:"never",t:"adv",l:"A1",m:"nunca"},
+  {w:"new",t:"adj",l:"A1",m:"nuevo"},{w:"news",t:"n",l:"A1",m:"noticias"},{w:"next",t:"adj",l:"A1",m:"siguiente"},
+  {w:"nice",t:"adj",l:"A1",m:"agradable"},{w:"night",t:"n",l:"A1",m:"noche"},{w:"no",t:"det",l:"A1",m:"no"},
+  {w:"not",t:"adv",l:"A1",m:"no"},{w:"nothing",t:"pron",l:"A1",m:"nada"},{w:"now",t:"adv",l:"A1",m:"ahora"},
+  {w:"number",t:"n",l:"A1",m:"número"},{w:"of",t:"prep",l:"A1",m:"de"},{w:"off",t:"adv",l:"A1",m:"apagado"},
+  {w:"office",t:"n",l:"A1",m:"oficina"},{w:"often",t:"adv",l:"A1",m:"a menudo"},{w:"old",t:"adj",l:"A1",m:"viejo"},
+  {w:"on",t:"prep",l:"A1",m:"en/sobre"},{w:"one",t:"num",l:"A1",m:"uno"},{w:"only",t:"adv",l:"A1",m:"solo"},
+  {w:"open",t:"v/adj",l:"A1",m:"abrir/abierto"},{w:"or",t:"conj",l:"A1",m:"o"},{w:"other",t:"det",l:"A1",m:"otro"},
+  {w:"our",t:"det",l:"A1",m:"nuestro"},{w:"out",t:"adv",l:"A1",m:"fuera"},{w:"over",t:"prep",l:"A1",m:"sobre"},
+  {w:"own",t:"adj",l:"A1",m:"propio"},{w:"page",t:"n",l:"A1",m:"página"},{w:"parent",t:"n",l:"A1",m:"padre/madre"},
+  {w:"park",t:"n",l:"A1",m:"parque"},{w:"part",t:"n",l:"A1",m:"parte"},{w:"party",t:"n",l:"A1",m:"fiesta"},
+  {w:"pay",t:"v",l:"A1",m:"pagar"},{w:"people",t:"n",l:"A1",m:"gente"},{w:"person",t:"n",l:"A1",m:"persona"},
+  {w:"phone",t:"n",l:"A1",m:"teléfono"},{w:"photo",t:"n",l:"A1",m:"foto"},{w:"picture",t:"n",l:"A1",m:"imagen"},
+  {w:"place",t:"n",l:"A1",m:"lugar"},{w:"plan",t:"n/v",l:"A1",m:"plan/planear"},{w:"play",t:"v",l:"A1",m:"jugar"},
+  {w:"please",t:"adv",l:"A1",m:"por favor"},{w:"point",t:"n",l:"A1",m:"punto"},{w:"police",t:"n",l:"A1",m:"policía"},
+  {w:"poor",t:"adj",l:"A1",m:"pobre"},{w:"popular",t:"adj",l:"A1",m:"popular"},{w:"possible",t:"adj",l:"A1",m:"posible"},
+  {w:"practice",t:"n/v",l:"A1",m:"práctica"},{w:"prepare",t:"v",l:"A1",m:"preparar"},{w:"present",t:"adj/n",l:"A1",m:"presente"},
+  {w:"pretty",t:"adj",l:"A1",m:"bonito"},{w:"price",t:"n",l:"A1",m:"precio"},{w:"probably",t:"adv",l:"A1",m:"probablemente"},
+  {w:"problem",t:"n",l:"A1",m:"problema"},{w:"product",t:"n",l:"A1",m:"producto"},{w:"put",t:"v",l:"A1",m:"poner"},
+  {w:"question",t:"n",l:"A1",m:"pregunta"},{w:"quick",t:"adj",l:"A1",m:"rápido"},{w:"quiet",t:"adj",l:"A1",m:"tranquilo"},
+  {w:"rain",t:"n/v",l:"A1",m:"lluvia/llover"},{w:"read",t:"v",l:"A1",m:"leer"},{w:"ready",t:"adj",l:"A1",m:"listo"},
+  {w:"really",t:"adv",l:"A1",m:"realmente"},{w:"reason",t:"n",l:"A1",m:"razón"},{w:"red",t:"adj",l:"A1",m:"rojo"},
+  {w:"relax",t:"v",l:"A1",m:"relajarse"},{w:"remember",t:"v",l:"A1",m:"recordar"},{w:"restaurant",t:"n",l:"A1",m:"restaurante"},
+  {w:"return",t:"v",l:"A1",m:"volver"},{w:"rice",t:"n",l:"A1",m:"arroz"},{w:"rich",t:"adj",l:"A1",m:"rico"},
+  {w:"ride",t:"v",l:"A1",m:"montar"},{w:"right",t:"adj",l:"A1",m:"derecho/correcto"},{w:"river",t:"n",l:"A1",m:"río"},
+  {w:"road",t:"n",l:"A1",m:"carretera"},{w:"room",t:"n",l:"A1",m:"habitación"},{w:"run",t:"v",l:"A1",m:"correr"},
+  {w:"sad",t:"adj",l:"A1",m:"triste"},{w:"same",t:"adj",l:"A1",m:"mismo"},{w:"say",t:"v",l:"A1",m:"decir"},
+  {w:"school",t:"n",l:"A1",m:"escuela"},{w:"sea",t:"n",l:"A1",m:"mar"},{w:"see",t:"v",l:"A1",m:"ver"},
+  {w:"sell",t:"v",l:"A1",m:"vender"},{w:"send",t:"v",l:"A1",m:"enviar"},{w:"she",t:"pron",l:"A1",m:"ella"},
+  {w:"shop",t:"n",l:"A1",m:"tienda"},{w:"short",t:"adj",l:"A1",m:"corto"},{w:"should",t:"v",l:"A1",m:"debería"},
+  {w:"show",t:"v/n",l:"A1",m:"mostrar"},{w:"sick",t:"adj",l:"A1",m:"enfermo"},{w:"similar",t:"adj",l:"A1",m:"similar"},
+  {w:"simple",t:"adj",l:"A1",m:"simple"},{w:"sing",t:"v",l:"A1",m:"cantar"},{w:"sister",t:"n",l:"A1",m:"hermana"},
+  {w:"sit",t:"v",l:"A1",m:"sentarse"},{w:"sleep",t:"v/n",l:"A1",m:"dormir"},{w:"slow",t:"adj",l:"A1",m:"lento"},
+  {w:"small",t:"adj",l:"A1",m:"pequeño"},{w:"snow",t:"n",l:"A1",m:"nieve"},{w:"so",t:"adv",l:"A1",m:"tan/así que"},
+  {w:"some",t:"det",l:"A1",m:"algunos"},{w:"something",t:"pron",l:"A1",m:"algo"},{w:"sometimes",t:"adv",l:"A1",m:"a veces"},
+  {w:"son",t:"n",l:"A1",m:"hijo"},{w:"song",t:"n",l:"A1",m:"canción"},{w:"soon",t:"adv",l:"A1",m:"pronto"},
+  {w:"sorry",t:"adj",l:"A1",m:"lo siento"},{w:"sound",t:"n/v",l:"A1",m:"sonido"},{w:"speak",t:"v",l:"A1",m:"hablar"},
+  {w:"special",t:"adj",l:"A1",m:"especial"},{w:"spend",t:"v",l:"A1",m:"gastar"},{w:"sport",t:"n",l:"A1",m:"deporte"},
+  {w:"spring",t:"n",l:"A1",m:"primavera"},{w:"stand",t:"v",l:"A1",m:"estar de pie"},{w:"star",t:"n",l:"A1",m:"estrella"},
+  {w:"start",t:"v",l:"A1",m:"empezar"},{w:"station",t:"n",l:"A1",m:"estación"},{w:"stay",t:"v",l:"A1",m:"quedarse"},
+  {w:"still",t:"adv",l:"A1",m:"todavía"},{w:"stop",t:"v",l:"A1",m:"parar"},{w:"store",t:"n",l:"A1",m:"tienda"},
+  {w:"story",t:"n",l:"A1",m:"historia"},{w:"street",t:"n",l:"A1",m:"calle"},{w:"strong",t:"adj",l:"A1",m:"fuerte"},
+  {w:"student",t:"n",l:"A1",m:"estudiante"},{w:"study",t:"v/n",l:"A1",m:"estudiar"},{w:"success",t:"n",l:"A1",m:"éxito"},
+  {w:"summer",t:"n",l:"A1",m:"verano"},{w:"sun",t:"n",l:"A1",m:"sol"},{w:"sure",t:"adj",l:"A1",m:"seguro"},
+  {w:"swim",t:"v",l:"A1",m:"nadar"},{w:"table",t:"n",l:"A1",m:"mesa"},{w:"take",t:"v",l:"A1",m:"tomar"},
+  {w:"talk",t:"v",l:"A1",m:"hablar"},{w:"tall",t:"adj",l:"A1",m:"alto"},{w:"tea",t:"n",l:"A1",m:"té"},
+  {w:"teach",t:"v",l:"A1",m:"enseñar"},{w:"teacher",t:"n",l:"A1",m:"profesor"},{w:"team",t:"n",l:"A1",m:"equipo"},
+  {w:"tell",t:"v",l:"A1",m:"decir"},{w:"test",t:"n",l:"A1",m:"prueba"},{w:"than",t:"conj",l:"A1",m:"que"},
+  {w:"thank",t:"v",l:"A1",m:"agradecer"},{w:"that",t:"det",l:"A1",m:"ese/esa"},{w:"the",t:"article",l:"A1",m:"el/la"},
+  {w:"their",t:"det",l:"A1",m:"su (de ellos)"},{w:"them",t:"pron",l:"A1",m:"ellos/ellas"},{w:"then",t:"adv",l:"A1",m:"entonces"},
+  {w:"there",t:"adv",l:"A1",m:"allí"},{w:"they",t:"pron",l:"A1",m:"ellos"},{w:"thing",t:"n",l:"A1",m:"cosa"},
+  {w:"think",t:"v",l:"A1",m:"pensar"},{w:"this",t:"det",l:"A1",m:"este/esta"},{w:"time",t:"n",l:"A1",m:"tiempo"},
+  {w:"tired",t:"adj",l:"A1",m:"cansado"},{w:"to",t:"prep",l:"A1",m:"a/para"},{w:"today",t:"adv",l:"A1",m:"hoy"},
+  {w:"together",t:"adv",l:"A1",m:"juntos"},{w:"tomorrow",t:"adv",l:"A1",m:"mañana"},{w:"too",t:"adv",l:"A1",m:"también"},
+  {w:"top",t:"n",l:"A1",m:"cima"},{w:"town",t:"n",l:"A1",m:"pueblo"},{w:"train",t:"n",l:"A1",m:"tren"},
+  {w:"travel",t:"v",l:"A1",m:"viajar"},{w:"tree",t:"n",l:"A1",m:"árbol"},{w:"true",t:"adj",l:"A1",m:"verdadero"},
+  {w:"try",t:"v",l:"A1",m:"intentar"},{w:"turn",t:"v",l:"A1",m:"girar"},{w:"TV",t:"n",l:"A1",m:"televisión"},
+  {w:"under",t:"prep",l:"A1",m:"debajo"},{w:"understand",t:"v",l:"A1",m:"entender"},{w:"university",t:"n",l:"A1",m:"universidad"},
+  {w:"until",t:"prep",l:"A1",m:"hasta"},{w:"up",t:"adv",l:"A1",m:"arriba"},{w:"us",t:"pron",l:"A1",m:"nosotros"},
+  {w:"use",t:"v",l:"A1",m:"usar"},{w:"usually",t:"adv",l:"A1",m:"usualmente"},{w:"very",t:"adv",l:"A1",m:"muy"},
+  {w:"visit",t:"v",l:"A1",m:"visitar"},{w:"wait",t:"v",l:"A1",m:"esperar"},{w:"walk",t:"v",l:"A1",m:"caminar"},
+  {w:"wall",t:"n",l:"A1",m:"pared"},{w:"want",t:"v",l:"A1",m:"querer"},{w:"warm",t:"adj",l:"A1",m:"cálido"},
+  {w:"wash",t:"v",l:"A1",m:"lavar"},{w:"watch",t:"v/n",l:"A1",m:"ver/reloj"},{w:"water",t:"n",l:"A1",m:"agua"},
+  {w:"way",t:"n",l:"A1",m:"camino"},{w:"we",t:"pron",l:"A1",m:"nosotros"},{w:"weak",t:"adj",l:"A1",m:"débil"},
+  {w:"wear",t:"v",l:"A1",m:"llevar puesto"},{w:"weather",t:"n",l:"A1",m:"clima"},{w:"week",t:"n",l:"A1",m:"semana"},
+  {w:"well",t:"adv",l:"A1",m:"bien"},{w:"what",t:"pron",l:"A1",m:"qué"},{w:"when",t:"adv",l:"A1",m:"cuándo"},
+  {w:"where",t:"adv",l:"A1",m:"dónde"},{w:"which",t:"det",l:"A1",m:"cuál"},{w:"white",t:"adj",l:"A1",m:"blanco"},
+  {w:"who",t:"pron",l:"A1",m:"quién"},{w:"why",t:"adv",l:"A1",m:"por qué"},{w:"wife",t:"n",l:"A1",m:"esposa"},
+  {w:"will",t:"v",l:"A1",m:"voluntad (futuro)"},{w:"win",t:"v",l:"A1",m:"ganar"},{w:"window",t:"n",l:"A1",m:"ventana"},
+  {w:"winter",t:"n",l:"A1",m:"invierno"},{w:"with",t:"prep",l:"A1",m:"con"},{w:"without",t:"prep",l:"A1",m:"sin"},
+  {w:"woman",t:"n",l:"A1",m:"mujer"},{w:"wonderful",t:"adj",l:"A1",m:"maravilloso"},{w:"word",t:"n",l:"A1",m:"palabra"},
+  {w:"work",t:"v/n",l:"A1",m:"trabajar"},{w:"world",t:"n",l:"A1",m:"mundo"},{w:"write",t:"v",l:"A1",m:"escribir"},
+  {w:"wrong",t:"adj",l:"A1",m:"incorrecto"},{w:"year",t:"n",l:"A1",m:"año"},{w:"yellow",t:"adj",l:"A1",m:"amarillo"},
+  {w:"yes",t:"adv",l:"A1",m:"sí"},{w:"yesterday",t:"adv",l:"A1",m:"ayer"},{w:"you",t:"pron",l:"A1",m:"tú/usted"},
+  {w:"young",t:"adj",l:"A1",m:"joven"},{w:"your",t:"det",l:"A1",m:"tu/su"},
+
+  // A2 Level
+  {w:"ability",t:"n",l:"A2",m:"habilidad"},{w:"abroad",t:"adv",l:"A2",m:"en el extranjero"},{w:"accept",t:"v",l:"A2",m:"aceptar"},
+  {w:"accident",t:"n",l:"A2",m:"accidente"},{w:"achieve",t:"v",l:"A2",m:"lograr"},{w:"action",t:"n",l:"A2",m:"acción"},
+  {w:"active",t:"adj",l:"A2",m:"activo"},{w:"activity",t:"n",l:"A2",m:"actividad"},{w:"actually",t:"adv",l:"A2",m:"en realidad"},
+  {w:"add",t:"v",l:"A2",m:"añadir"},{w:"address",t:"n",l:"A2",m:"dirección"},{w:"adult",t:"n",l:"A2",m:"adulto"},
+  {w:"advantage",t:"n",l:"A2",m:"ventaja"},{w:"adventure",t:"n",l:"A2",m:"aventura"},{w:"advertise",t:"v",l:"A2",m:"anunciar"},
+  {w:"advice",t:"n",l:"A2",m:"consejo"},{w:"affect",t:"v",l:"A2",m:"afectar"},{w:"afraid",t:"adj",l:"A2",m:"asustado"},
+  {w:"age",t:"n",l:"A2",m:"edad"},{w:"agree",t:"v",l:"A2",m:"estar de acuerdo"},{w:"air",t:"n",l:"A2",m:"aire"},
+  {w:"airport",t:"n",l:"A2",m:"aeropuerto"},{w:"alive",t:"adj",l:"A2",m:"vivo"},{w:"allow",t:"v",l:"A2",m:"permitir"},
+  {w:"almost",t:"adv",l:"A2",m:"casi"},{w:"alone",t:"adj",l:"A2",m:"solo"},{w:"along",t:"prep",l:"A2",m:"a lo largo de"},
+  {w:"already",t:"adv",l:"A2",m:"ya"},{w:"although",t:"conj",l:"A2",m:"aunque"},{w:"amazing",t:"adj",l:"A2",m:"asombroso"},
+  {w:"amount",t:"n",l:"A2",m:"cantidad"},{w:"angry",t:"adj",l:"A2",m:"enojado"},{w:"announce",t:"v",l:"A2",m:"anunciar"},
+  {w:"appear",t:"v",l:"A2",m:"aparecer"},{w:"area",t:"n",l:"A2",m:"área"},{w:"argue",t:"v",l:"A2",m:"discutir"},
+  {w:"argument",t:"n",l:"A2",m:"argumento"},{w:"arm",t:"n",l:"A2",m:"brazo"},{w:"army",t:"n",l:"A2",m:"ejército"},
+  {w:"around",t:"prep",l:"A2",m:"alrededor"},{w:"arrange",t:"v",l:"A2",m:"organizar"},{w:"arrive",t:"v",l:"A2",m:"llegar"},
+  {w:"art",t:"n",l:"A2",m:"arte"},{w:"article",t:"n",l:"A2",m:"artículo"},{w:"artist",t:"n",l:"A2",m:"artista"},
+  {w:"asleep",t:"adj",l:"A2",m:"dormido"},{w:"attack",t:"n/v",l:"A2",m:"ataque/atacar"},{w:"attention",t:"n",l:"A2",m:"atención"},
+  {w:"audience",t:"n",l:"A2",m:"audiencia"},{w:"author",t:"n",l:"A2",m:"autor"},{w:"available",t:"adj",l:"A2",m:"disponible"},
+  {w:"avoid",t:"v",l:"A2",m:"evitar"},{w:"award",t:"n",l:"A2",m:"premio"},{w:"awful",t:"adj",l:"A2",m:"horrible"},
+  {w:"background",t:"n",l:"A2",m:"fondo"},{w:"bank",t:"n",l:"A2",m:"banco"},{w:"bar",t:"n",l:"A2",m:"bar"},
+  {w:"basic",t:"adj",l:"A2",m:"básico"},{w:"beach",t:"n",l:"A2",m:"playa"},{w:"bear",t:"n",l:"A2",m:"oso"},
+  {w:"beat",t:"v",l:"A2",m:"golpear"},{w:"become",t:"v",l:"A2",m:"convertirse"},{w:"behavior",t:"n",l:"A2",m:"comportamiento"},
+  {w:"belong",t:"v",l:"A2",m:"pertenecer"},{w:"below",t:"prep",l:"A2",m:"debajo"},{w:"benefit",t:"n",l:"A2",m:"beneficio"},
+  {w:"beside",t:"prep",l:"A2",m:"al lado de"},{w:"bill",t:"n",l:"A2",m:"cuenta/factura"},{w:"bite",t:"v",l:"A2",m:"morder"},
+  {w:"blood",t:"n",l:"A2",m:"sangre"},{w:"blow",t:"v",l:"A2",m:"soplar"},{w:"board",t:"n",l:"A2",m:"tablero"},
+  {w:"boat",t:"n",l:"A2",m:"bote"},{w:"bone",t:"n",l:"A2",m:"hueso"},{w:"border",t:"n",l:"A2",m:"frontera"},
+  {w:"born",t:"v",l:"A2",m:"nacer"},{w:"boss",t:"n",l:"A2",m:"jefe"},{w:"bottle",t:"n",l:"A2",m:"botella"},
+  {w:"bottom",t:"n",l:"A2",m:"fondo"},{w:"brain",t:"n",l:"A2",m:"cerebro"},{w:"branch",t:"n",l:"A2",m:"rama"},
+  {w:"brave",t:"adj",l:"A2",m:"valiente"},{w:"break",t:"v",l:"A2",m:"romper"},{w:"bridge",t:"n",l:"A2",m:"puente"},
+  {w:"bright",t:"adj",l:"A2",m:"brillante"},{w:"broken",t:"adj",l:"A2",m:"roto"},{w:"burn",t:"v",l:"A2",m:"quemar"},
+  {w:"camera",t:"n",l:"A2",m:"cámara"},{w:"camp",t:"n",l:"A2",m:"campamento"},{w:"cancel",t:"v",l:"A2",m:"cancelar"},
+  {w:"capital",t:"n",l:"A2",m:"capital"},{w:"card",t:"n",l:"A2",m:"tarjeta"},{w:"care",t:"n/v",l:"A2",m:"cuidado/cuidar"},
+  {w:"career",t:"n",l:"A2",m:"carrera"},{w:"careful",t:"adj",l:"A2",m:"cuidadoso"},{w:"carry",t:"v",l:"A2",m:"llevar"},
+  {w:"case",t:"n",l:"A2",m:"caso"},{w:"castle",t:"n",l:"A2",m:"castillo"},{w:"catch",t:"v",l:"A2",m:"atrapar"},
+  {w:"cause",t:"n/v",l:"A2",m:"causa/causar"},{w:"celebrate",t:"v",l:"A2",m:"celebrar"},{w:"century",t:"n",l:"A2",m:"siglo"},
+  {w:"certain",t:"adj",l:"A2",m:"cierto"},{w:"chance",t:"n",l:"A2",m:"oportunidad"},{w:"change",t:"v/n",l:"A2",m:"cambiar/cambio"},
+  {w:"character",t:"n",l:"A2",m:"personaje"},{w:"cheap",t:"adj",l:"A2",m:"barato"},{w:"check",t:"v",l:"A2",m:"verificar"},
+  {w:"chest",t:"n",l:"A2",m:"pecho"},{w:"choice",t:"n",l:"A2",m:"elección"},{w:"choose",t:"v",l:"A2",m:"elegir"},
+  {w:"church",t:"n",l:"A2",m:"iglesia"},{w:"cinema",t:"n",l:"A2",m:"cine"},{w:"circle",t:"n",l:"A2",m:"círculo"},
+  {w:"clear",t:"adj",l:"A2",m:"claro"},{w:"clever",t:"adj",l:"A2",m:"inteligente"},{w:"climb",t:"v",l:"A2",m:"escalar"},
+  {w:"cloud",t:"n",l:"A2",m:"nube"},{w:"club",t:"n",l:"A2",m:"club"},{w:"coast",t:"n",l:"A2",m:"costa"},
+  {w:"collect",t:"v",l:"A2",m:"coleccionar"},{w:"college",t:"n",l:"A2",m:"universidad"},{w:"comfortable",t:"adj",l:"A2",m:"cómodo"},
+  {w:"comment",t:"n",l:"A2",m:"comentario"},{w:"common",t:"adj",l:"A2",m:"común"},{w:"communicate",t:"v",l:"A2",m:"comunicar"},
+  {w:"community",t:"n",l:"A2",m:"comunidad"},{w:"company",t:"n",l:"A2",m:"empresa"},{w:"compare",t:"v",l:"A2",m:"comparar"},
+  {w:"compete",t:"v",l:"A2",m:"competir"},{w:"competition",t:"n",l:"A2",m:"competencia"},{w:"complain",t:"v",l:"A2",m:"quejarse"},
+  {w:"complete",t:"adj/v",l:"A2",m:"completo"},{w:"condition",t:"n",l:"A2",m:"condición"},{w:"conference",t:"n",l:"A2",m:"conferencia"},
+  {w:"confident",t:"adj",l:"A2",m:"seguro"},{w:"connect",t:"v",l:"A2",m:"conectar"},{w:"consider",t:"v",l:"A2",m:"considerar"},
+  {w:"contact",t:"n/v",l:"A2",m:"contacto"},{w:"contain",t:"v",l:"A2",m:"contener"},{w:"continue",t:"v",l:"A2",m:"continuar"},
+  {w:"control",t:"n/v",l:"A2",m:"control"},{w:"convenient",t:"adj",l:"A2",m:"conveniente"},{w:"conversation",t:"n",l:"A2",m:"conversación"},
+  {w:"copy",t:"n/v",l:"A2",m:"copia/copiar"},{w:"corner",t:"n",l:"A2",m:"esquina"},{w:"correct",t:"adj",l:"A2",m:"correcto"},
+  {w:"cost",t:"n/v",l:"A2",m:"costo"},{w:"count",t:"v",l:"A2",m:"contar"},{w:"couple",t:"n",l:"A2",m:"pareja"},
+  {w:"course",t:"n",l:"A2",m:"curso"},{w:"cover",t:"v",l:"A2",m:"cubrir"},{w:"crazy",t:"adj",l:"A2",m:"loco"},
+  {w:"cream",t:"n",l:"A2",m:"crema"},{w:"creative",t:"adj",l:"A2",m:"creativo"},{w:"crime",t:"n",l:"A2",m:"crimen"},
+  {w:"cross",t:"v",l:"A2",m:"cruzar"},{w:"crowd",t:"n",l:"A2",m:"multitud"},{w:"cry",t:"v",l:"A2",m:"llorar"},
+  {w:"culture",t:"n",l:"A2",m:"cultura"},{w:"cup",t:"n",l:"A2",m:"taza"},{w:"customer",t:"n",l:"A2",m:"cliente"},
+
+  // B1 Level
+  {w:"absolutely",t:"adv",l:"B1",m:"absolutamente"},{w:"access",t:"n/v",l:"B1",m:"acceso"},{w:"accommodation",t:"n",l:"B1",m:"alojamiento"},
+  {w:"account",t:"n",l:"B1",m:"cuenta"},{w:"achievement",t:"n",l:"B1",m:"logro"},{w:"admire",t:"v",l:"B1",m:"admirar"},
+  {w:"admit",t:"v",l:"B1",m:"admitir"},{w:"advanced",t:"adj",l:"B1",m:"avanzado"},{w:"advise",t:"v",l:"B1",m:"aconsejar"},
+  {w:"afford",t:"v",l:"B1",m:"permitirse"},{w:"agent",t:"n",l:"B1",m:"agente"},{w:"agreement",t:"n",l:"B1",m:"acuerdo"},
+  {w:"ahead",t:"adv",l:"B1",m:"adelante"},{w:"aim",t:"n/v",l:"B1",m:"objetivo"},{w:"alarm",t:"n",l:"B1",m:"alarma"},
+  {w:"alcohol",t:"n",l:"B1",m:"alcohol"},{w:"alternative",t:"n",l:"B1",m:"alternativa"},{w:"amazed",t:"adj",l:"B1",m:"asombrado"},
+  {w:"ambition",t:"n",l:"B1",m:"ambición"},{w:"ambitious",t:"adj",l:"B1",m:"ambicioso"},{w:"analysis",t:"n",l:"B1",m:"análisis"},
+  {w:"ancient",t:"adj",l:"B1",m:"antiguo"},{w:"apart",t:"adv",l:"B1",m:"aparte"},{w:"apologize",t:"v",l:"B1",m:"disculparse"},
+  {w:"application",t:"n",l:"B1",m:"aplicación"},{w:"apply",t:"v",l:"B1",m:"aplicar"},{w:"appointment",t:"n",l:"B1",m:"cita"},
+  {w:"appreciate",t:"v",l:"B1",m:"apreciar"},{w:"approach",t:"n/v",l:"B1",m:"enfoque"},{w:"approve",t:"v",l:"B1",m:"aprobar"},
+  {w:"arrest",t:"v",l:"B1",m:"arrestar"},{w:"arrival",t:"n",l:"B1",m:"llegada"},{w:"aspect",t:"n",l:"B1",m:"aspecto"},
+  {w:"assist",t:"v",l:"B1",m:"asistir"},{w:"associate",t:"v",l:"B1",m:"asociar"},{w:"assume",t:"v",l:"B1",m:"asumir"},
+  {w:"atmosphere",t:"n",l:"B1",m:"atmósfera"},{w:"attach",t:"v",l:"B1",m:"adjuntar"},{w:"attempt",t:"n/v",l:"B1",m:"intento"},
+  {w:"attitude",t:"n",l:"B1",m:"actitud"},{w:"attract",t:"v",l:"B1",m:"atraer"},{w:"attraction",t:"n",l:"B1",m:"atracción"},
+  {w:"authority",t:"n",l:"B1",m:"autoridad"},{w:"aware",t:"adj",l:"B1",m:"consciente"},{w:"balance",t:"n",l:"B1",m:"equilibrio"},
+  {w:"band",t:"n",l:"B1",m:"banda"},{w:"base",t:"n/v",l:"B1",m:"base"},{w:"basis",t:"n",l:"B1",m:"base"},
+  {w:"battle",t:"n",l:"B1",m:"batalla"},{w:"beauty",t:"n",l:"B1",m:"belleza"},{w:"belief",t:"n",l:"B1",m:"creencia"},
+  {w:"bell",t:"n",l:"B1",m:"campana"},{w:"bend",t:"v",l:"B1",m:"doblar"},{w:"block",t:"n/v",l:"B1",m:"bloque/bloquear"},
+  {w:"bomb",t:"n",l:"B1",m:"bomba"},{w:"bother",t:"v",l:"B1",m:"molestar"},{w:"brand",t:"n",l:"B1",m:"marca"},
+  {w:"breath",t:"n",l:"B1",m:"aliento"},{w:"breathe",t:"v",l:"B1",m:"respirar"},{w:"broad",t:"adj",l:"B1",m:"amplio"},
+  {w:"budget",t:"n",l:"B1",m:"presupuesto"},{w:"bury",t:"v",l:"B1",m:"enterrar"},{w:"calm",t:"adj",l:"B1",m:"calmado"},
+  {w:"campaign",t:"n",l:"B1",m:"campaña"},{w:"campus",t:"n",l:"B1",m:"campus"},{w:"candidate",t:"n",l:"B1",m:"candidato"},
+  {w:"capable",t:"adj",l:"B1",m:"capaz"},{w:"capacity",t:"n",l:"B1",m:"capacidad"},{w:"captain",t:"n",l:"B1",m:"capitán"},
+  {w:"career",t:"n",l:"B1",m:"carrera"},{w:"category",t:"n",l:"B1",m:"categoría"},{w:"ceiling",t:"n",l:"B1",m:"techo"},
+  {w:"celebration",t:"n",l:"B1",m:"celebración"},{w:"central",t:"adj",l:"B1",m:"central"},{w:"ceremony",t:"n",l:"B1",m:"ceremonia"},
+  {w:"chain",t:"n",l:"B1",m:"cadena"},{w:"challenge",t:"n",l:"B1",m:"desafío"},{w:"champion",t:"n",l:"B1",m:"campeón"},
+  {w:"channel",t:"n",l:"B1",m:"canal"},{w:"chapter",t:"n",l:"B1",m:"capítulo"},{w:"charge",t:"n/v",l:"B1",m:"cargo/cobrar"},
+  {w:"charity",t:"n",l:"B1",m:"caridad"},{w:"chemical",t:"adj/n",l:"B1",m:"químico"},{w:"childhood",t:"n",l:"B1",m:"infancia"},
+  {w:"claim",t:"v/n",l:"B1",m:"afirmar"},{w:"classic",t:"adj",l:"B1",m:"clásico"},{w:"click",t:"v",l:"B1",m:"hacer clic"},
+  {w:"client",t:"n",l:"B1",m:"cliente"},{w:"climate",t:"n",l:"B1",m:"clima"},{w:"clue",t:"n",l:"B1",m:"pista"},
+  {w:"coach",t:"n",l:"B1",m:"entrenador"},{w:"coin",t:"n",l:"B1",m:"moneda"},{w:"collection",t:"n",l:"B1",m:"colección"},
+  {w:"combine",t:"v",l:"B1",m:"combinar"},{w:"commercial",t:"adj",l:"B1",m:"comercial"},{w:"commit",t:"v",l:"B1",m:"cometer"},
+  {w:"communication",t:"n",l:"B1",m:"comunicación"},{w:"comparison",t:"n",l:"B1",m:"comparación"},{w:"competitive",t:"adj",l:"B1",m:"competitivo"},
+  {w:"complaint",t:"n",l:"B1",m:"queja"},{w:"complex",t:"adj",l:"B1",m:"complejo"},{w:"concentrate",t:"v",l:"B1",m:"concentrarse"},
+  {w:"concept",t:"n",l:"B1",m:"concepto"},{w:"concern",t:"n/v",l:"B1",m:"preocupación"},{w:"conclude",t:"v",l:"B1",m:"concluir"},
+  {w:"conclusion",t:"n",l:"B1",m:"conclusión"},{w:"conduct",t:"v/n",l:"B1",m:"conducta"},{w:"confidence",t:"n",l:"B1",m:"confianza"},
+  {w:"confirm",t:"v",l:"B1",m:"confirmar"},{w:"conflict",t:"n",l:"B1",m:"conflicto"},{w:"confuse",t:"v",l:"B1",m:"confundir"},
+  {w:"connection",t:"n",l:"B1",m:"conexión"},{w:"conscious",t:"adj",l:"B1",m:"consciente"},{w:"consequence",t:"n",l:"B1",m:"consecuencia"},
+  {w:"conservative",t:"adj",l:"B1",m:"conservador"},{w:"consist",t:"v",l:"B1",m:"consistir"},{w:"constant",t:"adj",l:"B1",m:"constante"},
+  {w:"construct",t:"v",l:"B1",m:"construir"},{w:"consumer",t:"n",l:"B1",m:"consumidor"},{w:"content",t:"n",l:"B1",m:"contenido"},
+  {w:"context",t:"n",l:"B1",m:"contexto"},{w:"contract",t:"n",l:"B1",m:"contrato"},{w:"contrast",t:"n",l:"B1",m:"contraste"},
+  {w:"contribute",t:"v",l:"B1",m:"contribuir"},{w:"convince",t:"v",l:"B1",m:"convencer"},{w:"core",t:"n",l:"B1",m:"núcleo"},
+  {w:"corporate",t:"adj",l:"B1",m:"corporativo"},{w:"cottage",t:"n",l:"B1",m:"cabaña"},{w:"cotton",t:"n",l:"B1",m:"algodón"},
+
+  // B2 Level
+  {w:"abandon",t:"v",l:"B2",m:"abandonar"},{w:"absolute",t:"adj",l:"B2",m:"absoluto"},{w:"academic",t:"adj",l:"B2",m:"académico"},
+  {w:"acceptable",t:"adj",l:"B2",m:"aceptable"},{w:"accurate",t:"adj",l:"B2",m:"preciso"},{w:"accuse",t:"v",l:"B2",m:"acusar"},
+  {w:"acknowledge",t:"v",l:"B2",m:"reconocer"},{w:"acquire",t:"v",l:"B2",m:"adquirir"},{w:"adapt",t:"v",l:"B2",m:"adaptar"},
+  {w:"additional",t:"adj",l:"B2",m:"adicional"},{w:"administration",t:"n",l:"B2",m:"administración"},{w:"adopt",t:"v",l:"B2",m:"adoptar"},
+  {w:"advance",t:"n/v",l:"B2",m:"avance"},{w:"affair",t:"n",l:"B2",m:"asunto"},{w:"agenda",t:"n",l:"B2",m:"agenda"},
+  {w:"aggressive",t:"adj",l:"B2",m:"agresivo"},{w:"aircraft",t:"n",l:"B2",m:"aeronave"},{w:"alter",t:"v",l:"B2",m:"alterar"},
+  {w:"analyse",t:"v",l:"B2",m:"analizar"},{w:"anger",t:"n",l:"B2",m:"ira"},{w:"angle",t:"n",l:"B2",m:"ángulo"},
+  {w:"annual",t:"adj",l:"B2",m:"anual"},{w:"anxious",t:"adj",l:"B2",m:"ansioso"},{w:"apparent",t:"adj",l:"B2",m:"aparente"},
+  {w:"appeal",t:"n/v",l:"B2",m:"apelación"},{w:"appropriate",t:"adj",l:"B2",m:"apropiado"},{w:"approval",t:"n",l:"B2",m:"aprobación"},
+  {w:"arise",t:"v",l:"B2",m:"surgir"},{w:"armed",t:"adj",l:"B2",m:"armado"},{w:"artistic",t:"adj",l:"B2",m:"artístico"},
+  {w:"ashamed",t:"adj",l:"B2",m:"avergonzado"},{w:"assess",t:"v",l:"B2",m:"evaluar"},{w:"assessment",t:"n",l:"B2",m:"evaluación"},
+  {w:"assignment",t:"n",l:"B2",m:"tarea"},{w:"associate",t:"v",l:"B2",m:"asociar"},{w:"association",t:"n",l:"B2",m:"asociación"},
+  {w:"assume",t:"v",l:"B2",m:"asumir"},{w:"barrier",t:"n",l:"B2",m:"barrera"},{w:"being",t:"n",l:"B2",m:"ser"},
+  {w:"benefit",t:"v",l:"B2",m:"beneficiar"},{w:"bent",t:"adj",l:"B2",m:"doblado"},{w:"bet",t:"v/n",l:"B2",m:"apostar"},
+  {w:"beyond",t:"prep",l:"B2",m:"más allá"},{w:"bitter",t:"adj",l:"B2",m:"amargo"},{w:"blame",t:"v/n",l:"B2",m:"culpar"},
+  {w:"blind",t:"adj",l:"B2",m:"ciego"},{w:"bond",t:"n",l:"B2",m:"vínculo"},{w:"breast",t:"n",l:"B2",m:"pecho"},
+  {w:"brief",t:"adj",l:"B2",m:"breve"},{w:"broadcast",t:"v/n",l:"B2",m:"transmitir"},{w:"budget",t:"n",l:"B2",m:"presupuesto"},
+  {w:"bullet",t:"n",l:"B2",m:"bala"},{w:"bunch",t:"n",l:"B2",m:"montón"},{w:"calculate",t:"v",l:"B2",m:"calcular"},
+  {w:"candidate",t:"n",l:"B2",m:"candidato"},{w:"capability",t:"n",l:"B2",m:"capacidad"},{w:"capture",t:"v",l:"B2",m:"capturar"},
+  {w:"cast",t:"v/n",l:"B2",m:"lanzar/elenco"},{w:"category",t:"n",l:"B2",m:"categoría"},{w:"cell",t:"n",l:"B2",m:"célula"},
+  {w:"chairman",t:"n",l:"B2",m:"presidente"},{w:"characteristic",t:"n",l:"B2",m:"característica"},{w:"circumstance",t:"n",l:"B2",m:"circunstancia"},
+  {w:"cite",t:"v",l:"B2",m:"citar"},{w:"citizen",t:"n",l:"B2",m:"ciudadano"},{w:"civil",t:"adj",l:"B2",m:"civil"},
+  {w:"classical",t:"adj",l:"B2",m:"clásico"},{w:"closely",t:"adv",l:"B2",m:"de cerca"},{w:"collapse",t:"v/n",l:"B2",m:"colapsar"},
+  {w:"combination",t:"n",l:"B2",m:"combinación"},{w:"command",t:"n/v",l:"B2",m:"comando"},{w:"commission",t:"n",l:"B2",m:"comisión"},
+  {w:"commitment",t:"n",l:"B2",m:"compromiso"},{w:"committee",t:"n",l:"B2",m:"comité"},{w:"commonly",t:"adv",l:"B2",m:"comúnmente"},
+  {w:"complicated",t:"adj",l:"B2",m:"complicado"},{w:"component",t:"n",l:"B2",m:"componente"},{w:"concentration",t:"n",l:"B2",m:"concentración"},
+  {w:"concerned",t:"adj",l:"B2",m:"preocupado"},{w:"confusing",t:"adj",l:"B2",m:"confuso"},{w:"consideration",t:"n",l:"B2",m:"consideración"},
+  {w:"consistent",t:"adj",l:"B2",m:"consistente"},{w:"construction",t:"n",l:"B2",m:"construcción"},{w:"contemporary",t:"adj",l:"B2",m:"contemporáneo"},
+  {w:"contest",t:"n",l:"B2",m:"concurso"},{w:"continuous",t:"adj",l:"B2",m:"continuo"},{w:"convert",t:"v",l:"B2",m:"convertir"},
+  {w:"convinced",t:"adj",l:"B2",m:"convencido"},{w:"cooperation",t:"n",l:"B2",m:"cooperación"},{w:"corporate",t:"adj",l:"B2",m:"corporativo"},
+  {w:"council",t:"n",l:"B2",m:"consejo"},{w:"courage",t:"n",l:"B2",m:"coraje"},{w:"creation",t:"n",l:"B2",m:"creación"},
+  {w:"creature",t:"n",l:"B2",m:"criatura"},{w:"credit",t:"n",l:"B2",m:"crédito"},{w:"crew",t:"n",l:"B2",m:"tripulación"},
+  {w:"crisis",t:"n",l:"B2",m:"crisis"},{w:"criterion",t:"n",l:"B2",m:"criterio"},{w:"critic",t:"n",l:"B2",m:"crítico"},
+  {w:"critical",t:"adj",l:"B2",m:"crítico"},{w:"criticism",t:"n",l:"B2",m:"crítica"},{w:"crucial",t:"adj",l:"B2",m:"crucial"},
+
+  // C1 Level
+  {w:"abolish",t:"v",l:"C1",m:"abolir"},{w:"abortion",t:"n",l:"C1",m:"aborto"},{w:"absence",t:"n",l:"C1",m:"ausencia"},
+  {w:"absorb",t:"v",l:"C1",m:"absorber"},{w:"abstract",t:"adj",l:"C1",m:"abstracto"},{w:"absurd",t:"adj",l:"C1",m:"absurdo"},
+  {w:"abundance",t:"n",l:"C1",m:"abundancia"},{w:"abuse",t:"n/v",l:"C1",m:"abuso"},{w:"academy",t:"n",l:"C1",m:"academia"},
+  {w:"accelerate",t:"v",l:"C1",m:"acelerar"},{w:"acceptance",t:"n",l:"C1",m:"aceptación"},{w:"accessible",t:"adj",l:"C1",m:"accesible"},
+  {w:"accomplish",t:"v",l:"C1",m:"lograr"},{w:"accomplishment",t:"n",l:"C1",m:"logro"},{w:"accordance",t:"n",l:"C1",m:"acuerdo"},
+  {w:"accountability",t:"n",l:"C1",m:"responsabilidad"},{w:"accumulate",t:"v",l:"C1",m:"acumular"},{w:"accuracy",t:"n",l:"C1",m:"precisión"},
+  {w:"acquisition",t:"n",l:"C1",m:"adquisición"},{w:"activate",t:"v",l:"C1",m:"activar"},{w:"activist",t:"n",l:"C1",m:"activista"},
+  {w:"acute",t:"adj",l:"C1",m:"agudo"},{w:"adaptation",t:"n",l:"C1",m:"adaptación"},{w:"addiction",t:"n",l:"C1",m:"adicción"},
+  {w:"adequate",t:"adj",l:"C1",m:"adecuado"},{w:"adjacent",t:"adj",l:"C1",m:"adyacente"},{w:"adjust",t:"v",l:"C1",m:"ajustar"},
+  {w:"administer",t:"v",l:"C1",m:"administrar"},{w:"administrative",t:"adj",l:"C1",m:"administrativo"},{w:"admission",t:"n",l:"C1",m:"admisión"},
+  {w:"adolescent",t:"n",l:"C1",m:"adolescente"},{w:"adoption",t:"n",l:"C1",m:"adopción"},{w:"adverse",t:"adj",l:"C1",m:"adverso"},
+  {w:"advocate",t:"n/v",l:"C1",m:"defensor"},{w:"aesthetic",t:"adj",l:"C1",m:"estético"},{w:"affection",t:"n",l:"C1",m:"afecto"},
+  {w:"affordable",t:"adj",l:"C1",m:"asequible"},{w:"aftermath",t:"n",l:"C1",m:"consecuencias"},{w:"aggression",t:"n",l:"C1",m:"agresión"},
+  {w:"agricultural",t:"adj",l:"C1",m:"agrícola"},{w:"agriculture",t:"n",l:"C1",m:"agricultura"},{w:"alert",t:"adj/v",l:"C1",m:"alerta"},
+  {w:"alien",t:"n/adj",l:"C1",m:"extranjero"},{w:"align",t:"v",l:"C1",m:"alinear"},{w:"allegation",t:"n",l:"C1",m:"alegación"},
+  {w:"alliance",t:"n",l:"C1",m:"alianza"},{w:"allocate",t:"v",l:"C1",m:"asignar"},{w:"allowance",t:"n",l:"C1",m:"asignación"},
+  {w:"ally",t:"n",l:"C1",m:"aliado"},{w:"altogether",t:"adv",l:"C1",m:"en total"},{w:"amateur",t:"n/adj",l:"C1",m:"amateur"},
+  {w:"ambassador",t:"n",l:"C1",m:"embajador"},{w:"ambiguous",t:"adj",l:"C1",m:"ambiguo"},{w:"amend",t:"v",l:"C1",m:"enmendar"},
+  {w:"amendment",t:"n",l:"C1",m:"enmienda"},{w:"analogy",t:"n",l:"C1",m:"analogía"},{w:"analyst",t:"n",l:"C1",m:"analista"},
+  {w:"ancestor",t:"n",l:"C1",m:"ancestro"},{w:"anchor",t:"n",l:"C1",m:"ancla"},{w:"angel",t:"n",l:"C1",m:"ángel"},
+  {w:"animation",t:"n",l:"C1",m:"animación"},{w:"anonymous",t:"adj",l:"C1",m:"anónimo"},{w:"anticipate",t:"v",l:"C1",m:"anticipar"},
+  {w:"anxiety",t:"n",l:"C1",m:"ansiedad"},{w:"apparatus",t:"n",l:"C1",m:"aparato"},{w:"appealing",t:"adj",l:"C1",m:"atractivo"},
+  {w:"appetite",t:"n",l:"C1",m:"apetito"},{w:"applaud",t:"v",l:"C1",m:"aplaudir"},{w:"applicable",t:"adj",l:"C1",m:"aplicable"},
+  {w:"appoint",t:"v",l:"C1",m:"nombrar"},{w:"appreciation",t:"n",l:"C1",m:"apreciación"},{w:"arbitrary",t:"adj",l:"C1",m:"arbitrario"},
+  {w:"architectural",t:"adj",l:"C1",m:"arquitectónico"},{w:"archive",t:"n",l:"C1",m:"archivo"},{w:"arena",t:"n",l:"C1",m:"arena"},
+  {w:"arguably",t:"adv",l:"C1",m:"posiblemente"},{w:"array",t:"n",l:"C1",m:"conjunto"},{w:"articulate",t:"v",l:"C1",m:"articular"},
+  {w:"artwork",t:"n",l:"C1",m:"obra de arte"},{w:"aspiration",t:"n",l:"C1",m:"aspiración"},{w:"aspire",t:"v",l:"C1",m:"aspirar"},
+  {w:"assault",t:"n/v",l:"C1",m:"asalto"},{w:"assemble",t:"v",l:"C1",m:"ensamblar"},{w:"assembly",t:"n",l:"C1",m:"asamblea"},
+  {w:"assert",t:"v",l:"C1",m:"afirmar"},{w:"assertion",t:"n",l:"C1",m:"afirmación"},{w:"asset",t:"n",l:"C1",m:"activo"},
+  {w:"assign",t:"v",l:"C1",m:"asignar"},{w:"assistance",t:"n",l:"C1",m:"asistencia"},{w:"assumption",t:"n",l:"C1",m:"suposición"},
+  {w:"assurance",t:"n",l:"C1",m:"garantía"},{w:"assure",t:"v",l:"C1",m:"asegurar"},{w:"astonishing",t:"adj",l:"C1",m:"asombroso"},
+  {w:"asylum",t:"n",l:"C1",m:"asilo"},{w:"authentic",t:"adj",l:"C1",m:"auténtico"},{w:"authorize",t:"v",l:"C1",m:"autorizar"},
+  {w:"autonomy",t:"n",l:"C1",m:"autonomía"},{w:"availability",t:"n",l:"C1",m:"disponibilidad"},{w:"await",t:"v",l:"C1",m:"esperar"},
+  {w:"awareness",t:"n",l:"C1",m:"conciencia"},{w:"awkward",t:"adj",l:"C1",m:"incómodo"},{w:"backdrop",t:"n",l:"C1",m:"telón de fondo"}
+];
+
+// ============ APP STATE ============
+let state = {
+  xp: 0,
+  level: 'A1',
+  streak: 0,
+  lastStudyDate: null,
+  wordProgress: {},
+  quizzesDone: 0,
+  correctAnswers: 0,
+  totalAnswers: 0,
+  achievements: [],
+  settings: { notifications: false, darkMode: false, sounds: false, difficulty: 'medium' }
+};
+
+// ============ GAME CONFIG ============
+const LEVELS = {
+  'A1': { name: 'Principiante', xpNeeded: 0, color: '#4ade80' },
+  'A2': { name: 'Elemental', xpNeeded: 500, color: '#22d3ee' },
+  'B1': { name: 'Intermedio', xpNeeded: 1500, color: '#a78bfa' },
+  'B2': { name: 'Intermedio Alto', xpNeeded: 3500, color: '#FF6B9D' },
+  'C1': { name: 'Avanzado', xpNeeded: 7000, color: '#FF8C42' }
+};
+
+const ACHIEVEMENTS = [
+  { id: 'first_word', name: 'Primera Palabra', desc: 'Aprende tu primera palabra', icon: '🌱', condition: (s) => Object.keys(s.wordProgress).length >= 1 },
+  { id: 'ten_words', name: 'Vocabulario Inicial', desc: 'Aprende 10 palabras', icon: '📚', condition: (s) => Object.keys(s.wordProgress).length >= 10 },
+  { id: 'fifty_words', name: 'Coleccionista', desc: 'Aprende 50 palabras', icon: '🎯', condition: (s) => Object.keys(s.wordProgress).length >= 50 },
+  { id: 'hundred_words', name: 'Centenario', desc: 'Aprende 100 palabras', icon: '💯', condition: (s) => Object.keys(s.wordProgress).length >= 100 },
+  { id: 'first_quiz', name: 'Primer Quiz', desc: 'Completa tu primer quiz', icon: '✅', condition: (s) => s.quizzesDone >= 1 },
+  { id: 'ten_quizzes', name: 'Quizero', desc: 'Completa 10 quizzes', icon: '🏆', condition: (s) => s.quizzesDone >= 10 },
+  { id: 'streak_3', name: 'En Racha', desc: '3 días seguidos estudiando', icon: '🔥', condition: (s) => s.streak >= 3 },
+  { id: 'streak_7', name: 'Semana Perfecta', desc: '7 días seguidos estudiando', icon: '⚡', condition: (s) => s.streak >= 7 },
+  { id: 'streak_30', name: 'Imparable', desc: '30 días seguidos estudiando', icon: '👑', condition: (s) => s.streak >= 30 },
+  { id: 'level_a2', name: 'Nivel A2', desc: 'Alcanza el nivel A2', icon: '🥉', condition: (s) => ['A2','B1','B2','C1'].includes(s.level) },
+  { id: 'level_b1', name: 'Nivel B1', desc: 'Alcanza el nivel B1', icon: '🥈', condition: (s) => ['B1','B2','C1'].includes(s.level) },
+  { id: 'level_b2', name: 'Nivel B2', desc: 'Alcanza el nivel B2', icon: '🥇', condition: (s) => ['B2','C1'].includes(s.level) },
+  { id: 'perfect_quiz', name: 'Perfección', desc: 'Quiz perfecto (10/10)', icon: '💎', condition: (s) => s.achievements.includes('perfect_quiz_done') },
+  { id: 'accuracy_80', name: 'Precisión', desc: '80% de precisión general', icon: '🎯', condition: (s) => s.totalAnswers > 20 && (s.correctAnswers/s.totalAnswers) >= 0.8 }
+];
+
+// ============ SESSION VARIABLES ============
+let currentSession = { words: [], index: 0, correct: 0, mode: 'flashcard' };
+
+// ============ INIT ============
+function init() {
+  loadState();
+  updateStreak();
+  updateUI();
+  renderAchievements();
+  registerSW();
+}
+
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+  }
+}
+
+// ============ STATE MANAGEMENT ============
+function loadState() {
+  const saved = localStorage.getItem('oxfordWordsState');
+  if (saved) {
+    state = { ...state, ...JSON.parse(saved) };
+  }
+}
+
+function saveState() {
+  localStorage.setItem('oxfordWordsState', JSON.stringify(state));
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+  if (state.lastStudyDate === today) return;
+  if (state.lastStudyDate === yesterday) {
+    state.streak++;
+  } else if (state.lastStudyDate !== today) {
+    state.streak = state.lastStudyDate ? 0 : 0;
+  }
+  state.lastStudyDate = today;
+  saveState();
+}
+
+function addXP(amount) {
+  state.xp += amount;
+  checkLevelUp();
+  saveState();
+  updateUI();
+}
+
+function checkLevelUp() {
+  const levels = Object.entries(LEVELS).sort((a, b) => b[1].xpNeeded - a[1].xpNeeded);
+  for (const [lvl, data] of levels) {
+    if (state.xp >= data.xpNeeded) {
+      if (state.level !== lvl) {
+        state.level = lvl;
+        showModal('🎉', '¡Subiste de Nivel!', `Ahora eres nivel ${lvl}: ${data.name}`);
+      }
+      break;
+    }
+  }
+}
+
+function checkAchievements() {
+  for (const ach of ACHIEVEMENTS) {
+    if (!state.achievements.includes(ach.id) && ach.condition(state)) {
+      state.achievements.push(ach.id);
+      showModal(ach.icon, '¡Logro Desbloqueado!', `${ach.name}: ${ach.desc}`);
+      addXP(50);
+    }
+  }
+  saveState();
+  renderAchievements();
+}
+
+// ============ UI UPDATES ============
+function updateUI() {
+  // Streak
+  document.getElementById('streakCount').textContent = state.streak;
+
+  // Level display
+  const currentLevelData = LEVELS[state.level];
+  const levelKeys = Object.keys(LEVELS);
+  const currentIdx = levelKeys.indexOf(state.level);
+  const nextLevel = levelKeys[currentIdx + 1];
+  const nextXP = nextLevel ? LEVELS[nextLevel].xpNeeded : state.xp;
+  const prevXP = currentLevelData.xpNeeded;
+  const progress = nextLevel ? ((state.xp - prevXP) / (nextXP - prevXP)) * 100 : 100;
+
+  document.getElementById('userLevel').textContent = state.level;
+  document.getElementById('levelName').textContent = currentLevelData.name;
+  document.getElementById('currentXP').textContent = state.xp;
+  document.getElementById('nextLevelXP').textContent = nextXP;
+  document.querySelector('.level-circle').style.setProperty('--progress', `${progress}%`);
+
+  // Stats
+  const mastered = Object.values(state.wordProgress).filter(p => p >= 3).length;
+  const learning = Object.values(state.wordProgress).filter(p => p > 0 && p < 3).length;
+  const accuracy = state.totalAnswers > 0 ? Math.round((state.correctAnswers / state.totalAnswers) * 100) : 0;
+
+  document.getElementById('wordsMastered').textContent = mastered;
+  document.getElementById('wordsLearning').textContent = learning;
+  document.getElementById('quizzesDone').textContent = state.quizzesDone;
+  document.getElementById('accuracy').textContent = accuracy + '%';
+
+  // Progress bar
+  const totalProgress = Math.round((Object.keys(state.wordProgress).length / WORDS.length) * 100);
+  document.getElementById('totalProgress').textContent = totalProgress + '%';
+  document.getElementById('progressFill').style.width = totalProgress + '%';
+
+  // Level badges
+  const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1'];
+  const currentLevelIdx = levelOrder.indexOf(state.level);
+  levelOrder.forEach((lvl, idx) => {
+    const badge = document.getElementById(lvl.toLowerCase() + 'Badge');
+    if (badge) {
+      badge.style.opacity = idx <= currentLevelIdx ? '1' : '0.4';
+      if (idx <= currentLevelIdx) badge.textContent = lvl + ' ✓';
+    }
+  });
+}
+
+// ============ NAVIGATION ============
+function showView(viewName) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  document.getElementById(viewName + 'View').classList.add('active');
+  event.target.closest('.nav-item')?.classList.add('active');
+
+  if (viewName === 'words') renderWordsList();
+  if (viewName === 'achievements') renderAchievements();
+}
+
+// ============ FLASHCARDS ============
+function startFlashcards() {
+  const available = getAvailableWords();
+  if (available.length === 0) {
+    showModal('📚', 'Sin palabras', 'Ya dominaste todas las palabras de tu nivel actual.');
+    return;
+  }
+
+  currentSession = {
+    words: shuffleArray(available).slice(0, 10),
+    index: 0,
+    correct: 0,
+    mode: 'flashcard'
+  };
+
+  renderFlashcard();
+  showView('flashcard');
+  document.querySelector('[onclick="showView(\'flashcard\')"]')?.classList.add('active');
+}
+
+function renderFlashcard() {
+  const word = currentSession.words[currentSession.index];
+  if (!word) return endSession();
+
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('fcWord').textContent = word.w;
+  document.getElementById('fcType').textContent = word.t;
+  document.getElementById('fcLevel').textContent = word.l;
+  document.getElementById('fcMeaning').textContent = word.m;
+
+  // Progress dots
+  const progressHTML = currentSession.words.map((_, i) => {
+    let cls = 'quiz-dot';
+    if (i < currentSession.index) cls += ' completed';
+    else if (i === currentSession.index) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+  document.getElementById('flashcardProgress').innerHTML = progressHTML;
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function markWord(known) {
+  const word = currentSession.words[currentSession.index];
+
+  if (known) {
+    state.wordProgress[word.w] = (state.wordProgress[word.w] || 0) + 1;
+    currentSession.correct++;
+    addXP(10);
+  } else {
+    state.wordProgress[word.w] = Math.max(0, (state.wordProgress[word.w] || 0) - 1);
+  }
+
+  state.totalAnswers++;
+  if (known) state.correctAnswers++;
+
+  saveState();
+  currentSession.index++;
+
+  if (currentSession.index >= currentSession.words.length) {
+    endSession();
+  } else {
+    renderFlashcard();
+  }
+}
+
+// ============ QUIZ ============
+function startQuiz() {
+  const available = getAvailableWords();
+  if (available.length < 4) {
+    showModal('📚', 'Pocas palabras', 'Necesitas aprender más palabras primero.');
+    return;
+  }
+
+  currentSession = {
+    words: shuffleArray(available).slice(0, 10),
+    index: 0,
+    correct: 0,
+    mode: 'quiz'
+  };
+
+  renderQuiz();
+  showView('quiz');
+}
+
+function renderQuiz() {
+  const word = currentSession.words[currentSession.index];
+  if (!word) return endSession();
+
+  document.getElementById('quizLevel').textContent = word.l;
+  document.getElementById('quizQuestion').textContent = `¿Qué significa "${word.w}"?`;
+
+  // Generate options
+  const wrongOptions = WORDS.filter(w => w.w !== word.w && w.l === word.l).slice(0, 20);
+  const options = shuffleArray([word, ...shuffleArray(wrongOptions).slice(0, 3)]);
+
+  const optionsHTML = options.map(opt =>
+    `<button class="quiz-option" onclick="checkAnswer('${opt.w}', '${word.w}')">${opt.m}</button>`
+  ).join('');
+  document.getElementById('quizOptions').innerHTML = optionsHTML;
+
+  // Progress dots
+  const progressHTML = currentSession.words.map((_, i) => {
+    let cls = 'quiz-dot';
+    if (i < currentSession.index) cls += ' completed';
+    else if (i === currentSession.index) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+  document.getElementById('quizProgress').innerHTML = progressHTML;
+}
+
+function checkAnswer(selected, correct) {
+  const buttons = document.querySelectorAll('.quiz-option');
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === WORDS.find(w => w.w === correct)?.m) {
+      btn.classList.add('correct');
+    } else if (btn.textContent === WORDS.find(w => w.w === selected)?.m && selected !== correct) {
+      btn.classList.add('wrong');
+    }
+  });
+
+  const isCorrect = selected === correct;
+  state.totalAnswers++;
+
+  if (isCorrect) {
+    state.correctAnswers++;
+    currentSession.correct++;
+    state.wordProgress[correct] = (state.wordProgress[correct] || 0) + 1;
+    addXP(15);
+  } else {
+    state.wordProgress[correct] = Math.max(0, (state.wordProgress[correct] || 0) - 1);
+  }
+
+  saveState();
+
+  setTimeout(() => {
+    currentSession.index++;
+    if (currentSession.index >= currentSession.words.length) {
+      endSession();
+    } else {
+      renderQuiz();
+    }
+  }, 1000);
+}
+
+function startQuickReview() {
+  const toReview = WORDS.filter(w => {
+    const progress = state.wordProgress[w.w] || 0;
+    return progress > 0 && progress < 3;
+  });
+
+  if (toReview.length === 0) {
+    showModal('⚡', 'Nada que repasar', 'No tienes palabras pendientes de repaso.');
+    return;
+  }
+
+  currentSession = {
+    words: shuffleArray(toReview).slice(0, Math.min(5, toReview.length)),
+    index: 0,
+    correct: 0,
+    mode: 'flashcard'
+  };
+
+  renderFlashcard();
+  showView('flashcard');
+}
+
+// ============ SESSION END ============
+function endSession() {
+  state.quizzesDone++;
+
+  if (currentSession.correct === currentSession.words.length && currentSession.words.length === 10) {
+    if (!state.achievements.includes('perfect_quiz_done')) {
+      state.achievements.push('perfect_quiz_done');
+    }
+  }
+
+  saveState();
+  checkAchievements();
+
+  const percent = Math.round((currentSession.correct / currentSession.words.length) * 100);
+  let message = percent >= 80 ? '¡Excelente trabajo!' : percent >= 50 ? '¡Buen esfuerzo!' : 'Sigue practicando';
+
+  showModal(
+    percent >= 80 ? '🌟' : percent >= 50 ? '👍' : '💪',
+    'Sesión Completada',
+    `${currentSession.correct}/${currentSession.words.length} correctas (${percent}%)\n${message}`
+  );
+
+  showView('dashboard');
+  document.querySelector('.nav-item').classList.add('active');
+  updateUI();
+}
+
+// ============ WORDS LIST ============
+let wordFilter = 'all';
+let levelFilter = 'all';
+
+function filterWords(filter) {
+  wordFilter = filter;
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderWordsList();
+}
+
+function filterByLevel(level) {
+  levelFilter = level;
+  document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderWordsList();
+}
+
+function renderWordsList() {
+  let filtered = WORDS;
+
+  if (levelFilter !== 'all') {
+    filtered = filtered.filter(w => w.l === levelFilter);
+  }
+
+  if (wordFilter === 'learning') {
+    filtered = filtered.filter(w => {
+      const p = state.wordProgress[w.w] || 0;
+      return p > 0 && p < 3;
+    });
+  } else if (wordFilter === 'mastered') {
+    filtered = filtered.filter(w => (state.wordProgress[w.w] || 0) >= 3);
+  }
+
+  const html = filtered.slice(0, 100).map(w => {
+    const progress = state.wordProgress[w.w] || 0;
+    const mastery = progress >= 3 ? '⭐' : progress > 0 ? '📖' : '○';
+    return `
+      <div class="word-item">
+        <span class="word-text">${w.w}</span>
+        <div class="word-meta">
+          <span class="word-level-badge level-${w.l.toLowerCase()}">${w.l}</span>
+          <span class="mastery-indicator">${mastery}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('wordsList').innerHTML = html || '<p style="text-align:center;color:var(--gray)">No hay palabras que mostrar</p>';
+}
+
+// ============ ACHIEVEMENTS ============
+function renderAchievements() {
+  const html = ACHIEVEMENTS.map(ach => {
+    const unlocked = state.achievements.includes(ach.id);
+    return `
+      <div class="achievement ${unlocked ? '' : 'locked'}">
+        <div class="achievement-icon">${ach.icon}</div>
+        <div class="achievement-info">
+          <div class="achievement-name">${ach.name}</div>
+          <div class="achievement-desc">${ach.desc}</div>
+        </div>
+        ${unlocked ? '<span style="color:var(--green);font-size:1.5rem">✓</span>' : ''}
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('achievementsList').innerHTML = html;
+}
+
+// ============ SETTINGS ============
+function toggleSetting(setting) {
+  state.settings[setting] = !state.settings[setting];
+  document.getElementById(setting.charAt(0) + setting.slice(1) + 'Toggle')?.classList.toggle('active');
+  saveState();
+}
+
+function setDifficulty(diff) {
+  state.settings.difficulty = diff;
+  document.querySelectorAll('#settingsView .tabs .tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  saveState();
+}
+
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'oxford-words-progress.json';
+  a.click();
+}
+
+function confirmReset() {
+  if (confirm('¿Seguro que quieres borrar todo tu progreso? Esta acción no se puede deshacer.')) {
+    localStorage.removeItem('oxfordWordsState');
+    location.reload();
+  }
+}
+
+// ============ HELPERS ============
+function getAvailableWords() {
+  const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1'];
+  const maxLevelIdx = levelOrder.indexOf(state.level);
+  const allowedLevels = levelOrder.slice(0, maxLevelIdx + 1);
+
+  return WORDS.filter(w => {
+    const progress = state.wordProgress[w.w] || 0;
+    return allowedLevels.includes(w.l) && progress < 3;
+  });
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showModal(icon, title, text) {
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalText').textContent = text;
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+// ============ START ============
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
