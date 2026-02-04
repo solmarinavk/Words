@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oxford-words-v2';
+const CACHE_NAME = 'coco-words-v3';
 const urlsToCache = [
   '/',
   '/index.html',
