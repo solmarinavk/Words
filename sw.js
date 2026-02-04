@@ -1,7 +1,8 @@
-const CACHE_NAME = 'oxford-words-v1';
+const CACHE_NAME = 'oxford-words-v2';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/words.js',
   '/manifest.json'
 ];
 
